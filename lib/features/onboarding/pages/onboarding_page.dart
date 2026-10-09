@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../home/presentation/pages/home_page.dart';
 import '../../splash/widgets/splash_background.dart';
 import '../widgets/onboarding_content.dart';
 import '../widgets/onboarding_indicator.dart';
@@ -7,10 +8,7 @@ import '../widgets/onboarding_button.dart';
 class OnboardingPage extends StatefulWidget {
   final VoidCallback? onOnboardingComplete;
 
-  const OnboardingPage({
-    super.key,
-    this.onOnboardingComplete,
-  });
+  const OnboardingPage({super.key, this.onOnboardingComplete});
 
   @override
   State<OnboardingPage> createState() => _OnboardingPageState();
@@ -57,12 +55,22 @@ class _OnboardingPageState extends State<OnboardingPage> {
         curve: Curves.easeInOut,
       );
     } else {
-      widget.onOnboardingComplete?.call();
+      _navigateToHome();
     }
   }
 
   void _onSkipPressed() {
-    widget.onOnboardingComplete?.call();
+    _navigateToHome();
+  }
+
+  void _navigateToHome() {
+    if (widget.onOnboardingComplete != null) {
+      widget.onOnboardingComplete!();
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+    }
   }
 
   @override

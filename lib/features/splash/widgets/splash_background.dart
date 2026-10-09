@@ -29,8 +29,8 @@ class SplashBackground extends StatelessWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    const Color(0xFFFFE5CD).withOpacity(0.7),
-                    const Color(0xFFFFF2E6).withOpacity(0.3),
+                    const Color(0xFFFFE5CD).withValues(alpha: 0.7),
+                    const Color(0xFFFFF2E6).withValues(alpha: 0.3),
                     Colors.transparent,
                   ],
                   stops: const [0.0, 0.5, 1.0],
@@ -49,7 +49,7 @@ class SplashBackground extends StatelessWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    const Color(0xFFFFEDD8).withOpacity(0.45),
+                    const Color(0xFFFFEDD8).withValues(alpha: 0.45),
                     Colors.transparent,
                   ],
                 ),
@@ -67,8 +67,8 @@ class SplashBackground extends StatelessWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    const Color(0xFFFFDFBF).withOpacity(0.75),
-                    const Color(0xFFFFF1E4).withOpacity(0.4),
+                    const Color(0xFFFFDFBF).withValues(alpha: 0.75),
+                    const Color(0xFFFFF1E4).withValues(alpha: 0.4),
                     Colors.transparent,
                   ],
                   stops: const [0.0, 0.5, 1.0],
@@ -87,7 +87,7 @@ class SplashBackground extends StatelessWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    const Color(0xFFFFF0E1).withOpacity(0.5),
+                    const Color(0xFFFFF0E1).withValues(alpha: 0.5),
                     Colors.transparent,
                   ],
                 ),

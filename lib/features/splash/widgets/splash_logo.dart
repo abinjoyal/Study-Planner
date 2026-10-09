@@ -3,20 +3,15 @@ import 'package:flutter/material.dart';
 class SplashLogo extends StatelessWidget {
   final Animation<double> animation;
 
-  const SplashLogo({
-    super.key,
-    required this.animation,
-  });
+  const SplashLogo({super.key, required this.animation});
 
   @override
   Widget build(BuildContext context) {
     return ScaleTransition(
-      scale: Tween<double>(begin: 0.85, end: 1.0).animate(
-        CurvedAnimation(
-          parent: animation,
-          curve: Curves.easeOutBack,
-        ),
-      ),
+      scale: Tween<double>(
+        begin: 0.85,
+        end: 1.0,
+      ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutBack)),
       child: FadeTransition(
         opacity: animation,
         child: SizedBox(
@@ -100,13 +95,13 @@ class SplashLogo extends StatelessWidget {
                   borderRadius: BorderRadius.circular(40),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFFA8C16).withOpacity(0.35),
+                      color: const Color(0xFFFA8C16).withValues(alpha: 0.35),
                       blurRadius: 30,
                       spreadRadius: 1,
                       offset: const Offset(0, 12),
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
+                      color: Colors.black.withValues(alpha: 0.08),
                       blurRadius: 16,
                       offset: const Offset(0, 6),
                     ),
@@ -140,18 +135,10 @@ class _SparklePainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     // Ray 1
-    canvas.drawLine(
-      const Offset(4, 24),
-      const Offset(10, 8),
-      paint,
-    );
+    canvas.drawLine(const Offset(4, 24), const Offset(10, 8), paint);
 
     // Ray 2
-    canvas.drawLine(
-      const Offset(18, 20),
-      const Offset(28, 2),
-      paint,
-    );
+    canvas.drawLine(const Offset(18, 20), const Offset(28, 2), paint);
   }
 
   @override

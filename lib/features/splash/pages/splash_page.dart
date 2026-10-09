@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../home/presentation/pages/home_page.dart';
 import '../../onboarding/pages/onboarding_page.dart';
 import '../widgets/splash_background.dart';
 import '../widgets/splash_logo.dart';
@@ -62,20 +64,32 @@ class _SplashPageState extends State<SplashPage>
     });
   }
 
-  void _onLoadingFinished() {
-    Future.delayed(const Duration(milliseconds: 300), () {
-      if (mounted) {
-        if (widget.onInitializationComplete != null) {
-          widget.onInitializationComplete!();
-        } else {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => const OnboardingPage(),
-            ),
-          );
-        }
+  Future<void> _onLoadingFinished() async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool isOnboardingCompleted =
+        prefs.getBool('isOnboardingCompleted') ?? false;
+
+    if (!mounted) return;
+
+    if (widget.onInitializationComplete != null) {
+      widget.onInitializationComplete!();
+    } else {
+      if (isOnboardingCompleted) {
+        // Subsequent launches: Splash -> Home directly
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ),
+        );
+      } else {
+        // First launch: Splash -> Onboarding
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const OnboardingPage(),
+          ),
+        );
       }
-    });
+    }
   }
 
   @override

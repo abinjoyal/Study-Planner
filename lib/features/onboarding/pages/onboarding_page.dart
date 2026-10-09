@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../home/presentation/pages/home_page.dart';
 import '../../splash/widgets/splash_background.dart';
 import '../widgets/onboarding_content.dart';
@@ -63,7 +64,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
     _navigateToHome();
   }
 
-  void _navigateToHome() {
+  Future<void> _navigateToHome() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isOnboardingCompleted', true);
+
+    if (!mounted) return;
     if (widget.onOnboardingComplete != null) {
       widget.onOnboardingComplete!();
     } else {

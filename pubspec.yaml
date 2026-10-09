@@ -39,6 +39,7 @@ dependencies:
   shared_preferences: ^2.5.6
   flutter_local_notifications: ^22.3.1
   internet_connection_checker_plus: ^3.1.2
+  flutter_riverpod: ^2.6.1
 
 dev_dependencies:
   flutter_test:

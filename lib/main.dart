@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'features/splash/pages/splash_page.dart';
 
 void main() {
-  runApp(const StudyPlannerApp());
+  runApp(
+    const ProviderScope(
+      child: StudyPlannerApp(),
+    ),
+  );
 }
 
 class StudyPlannerApp extends StatelessWidget {

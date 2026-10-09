@@ -11,10 +11,7 @@ class MotivationalCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFFFF7ED),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: const Color(0xFFFFEDD8),
-          width: 1,
-        ),
+        border: Border.all(color: const Color(0xFFFFEDD8), width: 1),
       ),
       child: Row(
         children: [
@@ -27,10 +24,7 @@ class MotivationalCard extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             alignment: Alignment.center,
-            child: const Text(
-              '🎯',
-              style: TextStyle(fontSize: 22),
-            ),
+            child: const Text('🎯', style: TextStyle(fontSize: 22)),
           ),
           const SizedBox(width: 14),
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../../onboarding/pages/onboarding_page.dart';
 import '../widgets/splash_background.dart';
 import '../widgets/splash_logo.dart';
 import '../widgets/splash_title.dart';
@@ -64,7 +65,15 @@ class _SplashPageState extends State<SplashPage>
   void _onLoadingFinished() {
     Future.delayed(const Duration(milliseconds: 300), () {
       if (mounted) {
-        widget.onInitializationComplete?.call();
+        if (widget.onInitializationComplete != null) {
+          widget.onInitializationComplete!();
+        } else {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => const OnboardingPage(),
+            ),
+          );
+        }
       }
     });
   }

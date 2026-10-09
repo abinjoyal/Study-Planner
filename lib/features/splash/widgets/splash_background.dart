@@ -3,19 +3,14 @@ import 'package:flutter/material.dart';
 class SplashBackground extends StatelessWidget {
   final Widget child;
 
-  const SplashBackground({
-    super.key,
-    required this.child,
-  });
+  const SplashBackground({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      decoration: const BoxDecoration(
-        color: Color(0xFFFAF9F6),
-      ),
+      decoration: const BoxDecoration(color: Color(0xFFFAF9F6)),
       child: Stack(
         children: [
           // Top-Left Soft Warm Glow
@@ -96,11 +91,7 @@ class SplashBackground extends StatelessWidget {
           ),
           // Full-screen Center-aligned Foreground Content
           Positioned.fill(
-            child: SafeArea(
-              child: SizedBox.expand(
-                child: child,
-              ),
-            ),
+            child: SafeArea(child: SizedBox.expand(child: child)),
           ),
         ],
       ),

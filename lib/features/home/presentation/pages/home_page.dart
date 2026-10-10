@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:studyplanner/features/focus/presentation/pages/focus_page.dart';
 import 'package:studyplanner/features/planner/presentation/pages/planner_page.dart';
 
 import '../../../splash/widgets/splash_background.dart';
@@ -23,6 +24,9 @@ class HomePage extends ConsumerWidget {
 
     Widget body;
     switch (state.selectedNavIndex) {
+      case 2:
+        body = const FocusPage();
+        break;
       case 1:
         body = const PlannerPage();
         break;
@@ -66,7 +70,9 @@ class HomePage extends ConsumerWidget {
                           onCreatePlan: () {
                             notifier.setNavIndex(1);
                           },
-                          onFocusTimer: () {},
+                          onFocusTimer: () {
+                            notifier.setNavIndex(2);
+                          },
                           onViewSyllabus: () {},
                         ),
                         const SizedBox(height: 24),

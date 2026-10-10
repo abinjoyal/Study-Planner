@@ -61,7 +61,6 @@ class SubjectIconHelper {
           leftAccentColor: Color(0xFFFF6E1F),
         );
       case SubjectType.custom:
-      default:
         return const SubjectIconStyle(
           icon: Icons.bookmark_rounded,
           iconColor: Color(0xFF475569),

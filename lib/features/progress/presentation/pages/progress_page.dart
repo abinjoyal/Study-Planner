@@ -161,7 +161,7 @@ class ProgressPage extends ConsumerWidget {
                             color: Color(0xFFFF6E1F),
                           ),
                         ),
-                        error: (_, __) => const SizedBox.shrink(),
+                        error: (error, stackTrace) => const SizedBox.shrink(),
                       ),
                       const SizedBox(height: 24),
                     ],

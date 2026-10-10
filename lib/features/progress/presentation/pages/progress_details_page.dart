@@ -105,7 +105,8 @@ class ProgressDetailsPage extends ConsumerWidget {
                 Expanded(
                   child: ListView.separated(
                     itemCount: data.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 10),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 10),
                     itemBuilder: (context, index) {
                       final item = data[index];
                       final minutes = item['minutes'] as int;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:studyplanner/features/focus/presentation/pages/focus_page.dart';
 import 'package:studyplanner/features/planner/presentation/pages/planner_page.dart';
+import 'package:studyplanner/features/progress/presentation/pages/progress_page.dart';
 
 import '../../../splash/widgets/splash_background.dart';
 import '../providers/home_provider.dart';
@@ -24,6 +25,9 @@ class HomePage extends ConsumerWidget {
 
     Widget body;
     switch (state.selectedNavIndex) {
+      case 3:
+        body = const ProgressPage();
+        break;
       case 2:
         body = const FocusPage();
         break;

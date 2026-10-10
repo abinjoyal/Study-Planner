@@ -6,7 +6,7 @@ class GetSubjectProgress {
 
   GetSubjectProgress(this.repository);
 
-  Future<List<SubjectProgress>> call(ProgressPeriod period) {
-    return repository.getSubjectProgress(period);
+  Future<List<SubjectProgress>> call(ProgressPeriod period, {DateTime? customDate}) {
+    return repository.getSubjectProgress(period, customDate: customDate);
   }
 }

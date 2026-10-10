@@ -15,13 +15,13 @@ class ProgressRepositoryImpl implements ProgressRepository {
   });
 
   @override
-  Future<ProgressSummary> getProgressSummary(ProgressPeriod period) async {
-    return await localDataSource.getSummary(period);
+  Future<ProgressSummary> getProgressSummary(ProgressPeriod period, {DateTime? customDate}) async {
+    return await localDataSource.getSummary(period, customDate: customDate);
   }
 
   @override
-  Future<List<SubjectProgress>> getSubjectProgress(ProgressPeriod period) async {
-    return await localDataSource.getSubjectProgress(period);
+  Future<List<SubjectProgress>> getSubjectProgress(ProgressPeriod period, {DateTime? customDate}) async {
+    return await localDataSource.getSubjectProgress(period, customDate: customDate);
   }
 
   @override

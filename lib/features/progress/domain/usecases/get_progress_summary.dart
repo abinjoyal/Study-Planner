@@ -6,7 +6,7 @@ class GetProgressSummary {
 
   GetProgressSummary(this.repository);
 
-  Future<ProgressSummary> call(ProgressPeriod period) {
-    return repository.getProgressSummary(period);
+  Future<ProgressSummary> call(ProgressPeriod period, {DateTime? customDate}) {
+    return repository.getProgressSummary(period, customDate: customDate);
   }
 }

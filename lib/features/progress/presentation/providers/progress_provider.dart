@@ -56,6 +56,7 @@ class ProgressState {
   final ProgressSummary? summary;
   final StudyStreak? streak;
   final double weeklyGoalPct;
+  final DateTime? selectedDate;
   final String? errorMessage;
 
   const ProgressState({
@@ -63,6 +64,7 @@ class ProgressState {
     this.summary,
     this.streak,
     this.weeklyGoalPct = 0.0,
+    this.selectedDate,
     this.errorMessage,
   });
 
@@ -71,6 +73,8 @@ class ProgressState {
     ProgressSummary? summary,
     StudyStreak? streak,
     double? weeklyGoalPct,
+    DateTime? selectedDate,
+    bool clearSelectedDate = false,
     String? errorMessage,
   }) {
     return ProgressState(
@@ -78,6 +82,7 @@ class ProgressState {
       summary: summary ?? this.summary,
       streak: streak ?? this.streak,
       weeklyGoalPct: weeklyGoalPct ?? this.weeklyGoalPct,
+      selectedDate: clearSelectedDate ? null : (selectedDate ?? this.selectedDate),
       errorMessage: errorMessage,
     );
   }
@@ -102,7 +107,10 @@ class ProgressNotifier extends StateNotifier<ProgressState> {
     state = state.copyWith(isLoading: true);
     try {
       final period = ref.read(progressFilterProvider);
-      final summary = await getProgressSummaryUseCase(period);
+      final summary = await getProgressSummaryUseCase(
+        period,
+        customDate: state.selectedDate,
+      );
       final streak = await getStudyStreakUseCase();
       final goal = await getWeeklyGoalUseCase();
 
@@ -120,8 +128,18 @@ class ProgressNotifier extends StateNotifier<ProgressState> {
     }
   }
 
+  void selectDate(DateTime? date) {
+    if (date == null) {
+      state = state.copyWith(clearSelectedDate: true);
+    } else {
+      state = state.copyWith(selectedDate: date);
+    }
+    loadData();
+  }
+
   void changePeriod(ProgressPeriod period) {
     ref.read(progressFilterProvider.notifier).state = period;
+    state = state.copyWith(clearSelectedDate: true);
     loadData();
   }
 }

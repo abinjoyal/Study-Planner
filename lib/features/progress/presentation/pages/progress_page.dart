@@ -43,8 +43,72 @@ class ProgressPage extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // My Progress Header Title
-                      const ProgressHeader(),
-                      const SizedBox(height: 20),
+                      ProgressHeader(
+                        onCalendarTap: () async {
+                          final picked = await showDatePicker(
+                            context: context,
+                            initialDate: state.selectedDate ?? DateTime.now(),
+                            firstDate: DateTime(2020),
+                            lastDate: DateTime(2030),
+                          );
+                          if (picked != null) {
+                            notifier.selectDate(picked);
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Selected Date Filter Badge (If Active)
+                      if (state.selectedDate != null) ...[
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFF1F0),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: const Color(
+                                    0xFFFF6E1F,
+                                  ).withValues(alpha: 0.3),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.event_note_rounded,
+                                    size: 16,
+                                    color: Color(0xFFFF6E1F),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'Stats for ${state.selectedDate!.day}/${state.selectedDate!.month}/${state.selectedDate!.year}',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xFFFF6E1F),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  GestureDetector(
+                                    onTap: () => notifier.selectDate(null),
+                                    child: const Icon(
+                                      Icons.close_rounded,
+                                      size: 16,
+                                      color: Color(0xFFFF6E1F),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+                      ],
 
                       // Period Selector (This Week / This Month / All Time)
                       ProgressPeriodSelector(

@@ -105,42 +105,6 @@ class _TimerCirclePainter extends CustomPainter {
       false,
       progressPaint,
     );
-
-    // Sunburst decorative dashes top-right and bottom-left
-    final burstPaint = Paint()
-      ..color = progressColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.5
-      ..strokeCap = StrokeCap.round;
-
-    // Top-right dashes angles (around 30 to 60 deg)
-    _drawDash(canvas, center, radius + 16, radius + 26, -pi / 6, burstPaint);
-    _drawDash(canvas, center, radius + 16, radius + 26, -pi / 12, burstPaint);
-    _drawDash(canvas, center, radius + 16, radius + 26, 0, burstPaint);
-
-    // Bottom-left dashes angles (around 120 to 150 deg)
-    _drawDash(canvas, center, radius + 16, radius + 26, 3 * pi / 4, burstPaint);
-    _drawDash(canvas, center, radius + 16, radius + 26, 5 * pi / 6, burstPaint);
-    _drawDash(canvas, center, radius + 16, radius + 26, 11 * pi / 12, burstPaint);
-  }
-
-  void _drawDash(
-    Canvas canvas,
-    Offset center,
-    double innerRadius,
-    double outerRadius,
-    double angle,
-    Paint paint,
-  ) {
-    final start = Offset(
-      center.dx + innerRadius * cos(angle),
-      center.dy + innerRadius * sin(angle),
-    );
-    final end = Offset(
-      center.dx + outerRadius * cos(angle),
-      center.dy + outerRadius * sin(angle),
-    );
-    canvas.drawLine(start, end, paint);
   }
 
   @override

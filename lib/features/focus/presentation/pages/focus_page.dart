@@ -5,7 +5,6 @@ import '../providers/focus_stats_provider.dart';
 import '../providers/focus_timer_provider.dart';
 import '../widgets/focus_header.dart';
 import '../widgets/focus_mode_selector.dart';
-import '../widgets/focus_quote_card.dart';
 import '../widgets/focus_timer_circle.dart';
 import '../widgets/focus_timer_controls.dart';
 import '../widgets/today_focus_section.dart';
@@ -34,9 +33,7 @@ class FocusPage extends ConsumerWidget {
               FocusHeader(
                 onStatsTap: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const FocusHistoryPage(),
-                    ),
+                    MaterialPageRoute(builder: (_) => const FocusHistoryPage()),
                   );
                 },
                 onSettingsTap: () {
@@ -82,19 +79,13 @@ class FocusPage extends ConsumerWidget {
               ),
               const SizedBox(height: 28),
 
-              // Quote Card
-              const FocusQuoteCard(),
-              const SizedBox(height: 24),
-
               // Today's Focus Stats Section
               TodayFocusSection(
                 totalFocusFormatted: statsState.totalFocusFormatted,
                 sessionCount: statsState.sessionCount,
                 onSeeAllTap: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const FocusHistoryPage(),
-                    ),
+                    MaterialPageRoute(builder: (_) => const FocusHistoryPage()),
                   );
                 },
               ),

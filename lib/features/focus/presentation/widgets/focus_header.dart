@@ -16,7 +16,7 @@ class FocusHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        if (onBackTap != null) ...[
+        if (onBackTap != null)
           IconButton(
             onPressed: onBackTap,
             icon: const Icon(
@@ -25,15 +25,12 @@ class FocusHeader extends StatelessWidget {
               size: 20,
             ),
           ),
-        ] else ...[
-          const SizedBox(width: 8),
-        ],
         const Expanded(
           child: Text(
             'Focus Timer',
-            textAlign: TextAlign.center,
+            textAlign: TextAlign.left,
             style: TextStyle(
-              fontSize: 22,
+              fontSize: 26,
               fontWeight: FontWeight.w800,
               color: Color(0xFF1B1C4B),
               letterSpacing: -0.5,

@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'core/services/supabase_service.dart';
 import 'features/splash/pages/splash_page.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Load environment variables securely from .env
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (_) {
+    // If .env file is missing or in test mode, proceed gracefully
+  }
+
+  // Initialize Supabase if valid credentials are present in .env
+  await SupabaseService.initialize();
+
   runApp(
     const ProviderScope(
       child: StudyPlannerApp(),

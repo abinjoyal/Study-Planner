@@ -122,7 +122,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                         scrollDirection: Axis.horizontal,
                         shrinkWrap: true,
                         itemCount: kPresetAvatars.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 14),
+                        separatorBuilder: (_, _) => const SizedBox(width: 14),
                         itemBuilder: (context, index) {
                           final avatarPath = kPresetAvatars[index];
                           final isSelected = editState.avatarUrl == avatarPath;
@@ -157,7 +157,7 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                                 child: Image.asset(
                                   avatarPath,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => Container(
+                                  errorBuilder: (_, _, _) => Container(
                                     color: const Color(0xFFFFEDD5),
                                     child: Center(
                                       child: Text(

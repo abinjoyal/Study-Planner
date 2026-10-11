@@ -321,7 +321,7 @@ class StudyGoalsPage extends ConsumerWidget {
                     ),
                     Switch.adaptive(
                       value: settings.shareProgress,
-                      activeColor: const Color(0xFFF95700),
+                      activeTrackColor: const Color(0xFFF95700),
                       onChanged: notifier.toggleShareProgress,
                     ),
                   ],

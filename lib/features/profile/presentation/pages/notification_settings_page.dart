@@ -170,7 +170,7 @@ class NotificationSettingsPage extends ConsumerWidget {
           ),
           Switch.adaptive(
             value: value,
-            activeColor: const Color(0xFFF95700),
+            activeTrackColor: const Color(0xFFF95700),
             onChanged: onChanged,
           ),
         ],

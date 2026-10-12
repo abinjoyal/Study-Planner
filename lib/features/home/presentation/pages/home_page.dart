@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../notifications/presentation/pages/notifications_page.dart';
 import '../../../planner/presentation/widgets/week_calendar.dart';
 import '../../../splash/widgets/splash_background.dart';
 import '../providers/home_provider.dart';
@@ -41,7 +42,13 @@ class HomePage extends ConsumerWidget {
                         studentName: dashboard?.studentName ?? 'Student',
                         hasNotification:
                             dashboard?.hasUnreadNotifications ?? true,
-                        onNotificationTap: () {},
+                        onNotificationTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const NotificationsPage(),
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(height: 16),
 

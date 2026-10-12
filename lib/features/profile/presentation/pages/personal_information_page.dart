@@ -18,8 +18,11 @@ class PersonalInformationPage extends ConsumerWidget {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded,
-              color: Color(0xFF0F172A), size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Color(0xFF0F172A),
+            size: 20,
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text(
@@ -66,10 +69,7 @@ class PersonalInformationPage extends ConsumerWidget {
               const SizedBox(height: 6),
               const Text(
                 'Manage your personal credentials and academic information',
-                style: TextStyle(
-                  fontSize: 13.5,
-                  color: Color(0xFF64748B),
-                ),
+                style: TextStyle(fontSize: 13.5, color: Color(0xFF64748B)),
               ),
               const SizedBox(height: 20),
 
@@ -123,38 +123,6 @@ class PersonalInformationPage extends ConsumerWidget {
                 label: 'Student ID',
                 value: profile?.id ?? 'STU-2026-9812',
               ),
-
-              const SizedBox(height: 32),
-
-              // Action button to open edit
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (_) => const EditProfilePage()),
-                    );
-                  },
-                  icon: const Icon(Icons.edit_outlined,
-                      color: Color(0xFFF95700), size: 18),
-                  label: const Text(
-                    'Update Personal Information',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFFF95700),
-                    ),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFFF95700), width: 1.5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -175,10 +143,7 @@ class PersonalInformationPage extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: const Color(0xFFF1F5F9),
-          width: 1.2,
-        ),
+        border: Border.all(color: const Color(0xFFF1F5F9), width: 1.2),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.02),

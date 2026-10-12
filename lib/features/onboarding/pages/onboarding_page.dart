@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../home/presentation/pages/home_page.dart';
+import '../../../core/router/nav_bar.dart';
 import '../../splash/widgets/splash_background.dart';
 import '../widgets/onboarding_content.dart';
 import '../widgets/onboarding_indicator.dart';
@@ -73,7 +73,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       widget.onOnboardingComplete!();
     } else {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(builder: (context) => const MainNavBar()),
       );
     }
   }

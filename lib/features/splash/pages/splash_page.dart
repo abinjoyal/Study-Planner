@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../home/presentation/pages/home_page.dart';
+import '../../../core/router/nav_bar.dart';
 import '../../onboarding/pages/onboarding_page.dart';
 import '../widgets/splash_background.dart';
 import '../widgets/splash_logo.dart';
@@ -78,7 +78,7 @@ class _SplashPageState extends State<SplashPage>
         // Subsequent launches: Splash -> Home directly
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => const HomePage(),
+            builder: (context) => const MainNavBar(),
           ),
         );
       } else {

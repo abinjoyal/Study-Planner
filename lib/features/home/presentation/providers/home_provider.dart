@@ -92,6 +92,10 @@ class HomeNotifier extends StateNotifier<HomeState> {
   void setNavIndex(int index) {
     state = state.copyWith(selectedNavIndex: index);
   }
+
+  void selectDate(DateTime date) {
+    state = state.copyWith(selectedDate: date);
+  }
 }
 
 final homeNotifierProvider =

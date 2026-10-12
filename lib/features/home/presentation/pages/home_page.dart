@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../planner/presentation/widgets/week_calendar.dart';
 import '../../../splash/widgets/splash_background.dart';
 import '../providers/home_provider.dart';
 import '../widgets/home_header.dart';
 import '../widgets/motivational_card.dart';
 import '../widgets/progress_card.dart';
-import '../widgets/quick_action_grid.dart';
 import '../widgets/today_tasks_section.dart';
 
 class HomePage extends ConsumerWidget {
@@ -36,44 +36,41 @@ class HomePage extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 12),
-                      // Header with Greeting & Notification
+                      // 1. Heading
                       HomeHeader(
                         studentName: dashboard?.studentName ?? 'Student',
                         hasNotification:
                             dashboard?.hasUnreadNotifications ?? true,
                         onNotificationTap: () {},
                       ),
+                      const SizedBox(height: 16),
+
+                      // 2. Week Calendar Strip
+                      WeekCalendar(
+                        days: const [],
+                        selectedDate: state.selectedDate ?? DateTime.now(),
+                        onDateSelected: (date) {
+                          notifier.selectDate(date);
+                        },
+                      ),
                       const SizedBox(height: 20),
 
-                      // Progress Card
+                      // 3. Progress Banner
                       ProgressCard(
                         completedTasks: dashboard?.completedTasksCount ?? 3,
                         totalTasks: dashboard?.totalTasksCount ?? 6,
                         progress: dashboard?.progressPercentage ?? 0.5,
                       ),
-                      const SizedBox(height: 20),
-
-                      // Quick Actions Grid
-                      QuickActionGrid(
-                        onAddSubject: () {},
-                        onCreatePlan: () {
-                          notifier.setNavIndex(1);
-                        },
-                        onFocusTimer: () {
-                          notifier.setNavIndex(2);
-                        },
-                        onViewSyllabus: () {},
-                      ),
                       const SizedBox(height: 24),
 
-                      // Today's Tasks Section
+                      // 4. Today's Tasks
                       TodayTasksSection(
                         tasks: dashboard?.todayTasks ?? [],
                         onToggleTask: (taskId) {
                           notifier.toggleTaskStatus(taskId);
                         },
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 12),
 
                       // Motivational Card
                       const MotivationalCard(),

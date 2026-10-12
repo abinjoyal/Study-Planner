@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/planner_provider.dart';
 import '../widgets/add_session_button.dart';
 import '../widgets/planner_header.dart';
-import '../widgets/schedule_view_toggle.dart';
 import '../widgets/study_schedule_list.dart';
 import '../widgets/week_calendar.dart';
 import 'add_study_session_page.dart';
@@ -22,9 +21,7 @@ class PlannerPage extends ConsumerWidget {
       body: SafeArea(
         child: state.isLoading && state.sessions.isEmpty
             ? const Center(
-                child: CircularProgressIndicator(
-                  color: Color(0xFFFF6E1F),
-                ),
+                child: CircularProgressIndicator(color: Color(0xFFFF6E1F)),
               )
             : RefreshIndicator(
                 onRefresh: () => notifier.init(),
@@ -32,7 +29,9 @@ class PlannerPage extends ConsumerWidget {
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0, vertical: 12.0),
+                    horizontal: 20.0,
+                    vertical: 12.0,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -62,24 +61,14 @@ class PlannerPage extends ConsumerWidget {
                       ),
                       const SizedBox(height: 20),
 
-                      // Day / Week / Month Toggle
-                      ScheduleViewToggle(
-                        currentMode: state.viewMode,
-                        onModeChanged: (mode) {
-                          notifier.setViewMode(mode);
-                        },
-                      ),
-                      const SizedBox(height: 24),
-
                       // Study Schedule Items List
                       StudyScheduleList(
                         sessions: state.sessions,
                         onEditSession: (session) {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) => AddStudySessionPage(
-                                sessionToEdit: session,
-                              ),
+                              builder: (_) =>
+                                  AddStudySessionPage(sessionToEdit: session),
                             ),
                           );
                         },

@@ -13,8 +13,11 @@ class HelpSupportPage extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded,
-              color: Color(0xFF0F172A), size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Color(0xFF0F172A),
+            size: 20,
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text(
@@ -56,8 +59,11 @@ class HelpSupportPage extends StatelessWidget {
                   children: [
                     const Row(
                       children: [
-                        Icon(Icons.support_agent_rounded,
-                            color: Colors.white, size: 28),
+                        Icon(
+                          Icons.support_agent_rounded,
+                          color: Colors.white,
+                          size: 28,
+                        ),
                         SizedBox(width: 10),
                         Text(
                           'We are here to help!',
@@ -84,7 +90,8 @@ class HelpSupportPage extends StatelessWidget {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
-                                'Support inquiry sent to support@studyplanner.app'),
+                              'Support inquiry sent to support@studyplanner.app',
+                            ),
                           ),
                         );
                       },
@@ -98,7 +105,9 @@ class HelpSupportPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(14),
                         ),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 18, vertical: 10),
+                          horizontal: 18,
+                          vertical: 10,
+                        ),
                       ),
                     ),
                   ],
@@ -157,10 +166,7 @@ class HelpSupportPage extends StatelessWidget {
                     const SizedBox(height: 4),
                     const Text(
                       'Crafted with ❤️ for students worldwide',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFFCBD5E1),
-                      ),
+                      style: TextStyle(fontSize: 12, color: Color(0xFFCBD5E1)),
                     ),
                   ],
                 ),
@@ -177,37 +183,43 @@ class HelpSupportPage extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: const Color(0xFFF1F5F9), width: 1.2),
+      ),
+      child: Material(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: const Color(0xFFF1F5F9),
-          width: 1.2,
-        ),
-      ),
-      child: ExpansionTile(
-        tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        childrenPadding:
-            const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-        title: Text(
-          question,
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF0F172A),
+        clipBehavior: Clip.antiAlias,
+        child: ExpansionTile(
+          shape: const Border(),
+          collapsedShape: const Border(),
+          tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          childrenPadding: const EdgeInsets.only(
+            left: 16,
+            right: 16,
+            bottom: 16,
           ),
-        ),
-        iconColor: const Color(0xFFF95700),
-        collapsedIconColor: const Color(0xFF94A3B8),
-        children: [
-          Text(
-            answer,
+          title: Text(
+            question,
             style: const TextStyle(
-              fontSize: 13.5,
-              color: Color(0xFF64748B),
-              height: 1.45,
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF0F172A),
             ),
           ),
-        ],
+          iconColor: const Color(0xFFF95700),
+          collapsedIconColor: const Color(0xFF94A3B8),
+          children: [
+            Text(
+              answer,
+              style: const TextStyle(
+                fontSize: 13.5,
+                color: Color(0xFF64748B),
+                height: 1.45,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

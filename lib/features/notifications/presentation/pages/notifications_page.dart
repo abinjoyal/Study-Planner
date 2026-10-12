@@ -36,32 +36,41 @@ class NotificationsPage extends ConsumerWidget {
           ),
         ),
         actions: [
-          if (state.unreadCount > 0)
-            TextButton(
-              onPressed: () => notifier.markAllAsRead(),
-              child: const Text(
-                'Mark read',
-                style: TextStyle(
-                  color: Color(0xFFF95700),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
           PopupMenuButton<String>(
-            icon: const Icon(
-              Icons.more_vert_rounded,
-              color: Color(0xFF64748B),
-            ),
+            icon: const Icon(Icons.more_vert_rounded, color: Color(0xFF64748B)),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
             onSelected: (value) {
-              if (value == 'clear_all') {
+              if (value == 'mark_all_read') {
+                notifier.markAllAsRead();
+              } else if (value == 'clear_all') {
                 notifier.clearAll();
               }
             },
             itemBuilder: (context) => [
+              if (state.unreadCount > 0)
+                const PopupMenuItem(
+                  value: 'mark_all_read',
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.done_all_rounded,
+                        color: Color(0xFFF95700),
+                        size: 20,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        'Mark all as read',
+                        style: TextStyle(
+                          color: Color(0xFF0F172A),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               const PopupMenuItem(
                 value: 'clear_all',
                 child: Row(
@@ -85,7 +94,7 @@ class NotificationsPage extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 8),
         ],
       ),
       body: SafeArea(
@@ -93,34 +102,49 @@ class NotificationsPage extends ConsumerWidget {
           children: [
             // Filter Pills Section
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 8.0,
+              ),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
                     _buildCategoryFilterChip(
                       label: 'All',
-                      isSelected: state.selectedCategory == NotificationCategory.all,
-                      onTap: () => notifier.setCategory(NotificationCategory.all),
+                      isSelected:
+                          state.selectedCategory == NotificationCategory.all,
+                      onTap: () =>
+                          notifier.setCategory(NotificationCategory.all),
                       badgeCount: state.notifications.length,
                     ),
                     const SizedBox(width: 8),
                     _buildCategoryFilterChip(
                       label: 'Reminders',
-                      isSelected: state.selectedCategory == NotificationCategory.reminders,
-                      onTap: () => notifier.setCategory(NotificationCategory.reminders),
+                      isSelected:
+                          state.selectedCategory ==
+                          NotificationCategory.reminders,
+                      onTap: () =>
+                          notifier.setCategory(NotificationCategory.reminders),
                     ),
                     const SizedBox(width: 8),
                     _buildCategoryFilterChip(
                       label: 'Achievements',
-                      isSelected: state.selectedCategory == NotificationCategory.achievements,
-                      onTap: () => notifier.setCategory(NotificationCategory.achievements),
+                      isSelected:
+                          state.selectedCategory ==
+                          NotificationCategory.achievements,
+                      onTap: () => notifier.setCategory(
+                        NotificationCategory.achievements,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     _buildCategoryFilterChip(
                       label: 'Deadlines',
-                      isSelected: state.selectedCategory == NotificationCategory.deadlines,
-                      onTap: () => notifier.setCategory(NotificationCategory.deadlines),
+                      isSelected:
+                          state.selectedCategory ==
+                          NotificationCategory.deadlines,
+                      onTap: () =>
+                          notifier.setCategory(NotificationCategory.deadlines),
                     ),
                   ],
                 ),
@@ -145,7 +169,8 @@ class NotificationsPage extends ConsumerWidget {
                         return _buildNotificationCard(
                           item: item,
                           onTap: () => notifier.markAsRead(item.id),
-                          onDismissed: () => notifier.removeNotification(item.id),
+                          onDismissed: () =>
+                              notifier.removeNotification(item.id),
                         );
                       },
                     ),
@@ -171,7 +196,9 @@ class NotificationsPage extends ConsumerWidget {
           color: isSelected ? const Color(0xFFF95700) : Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? const Color(0xFFF95700) : const Color(0xFFE2E8F0),
+            color: isSelected
+                ? const Color(0xFFF95700)
+                : const Color(0xFFE2E8F0),
             width: 1.2,
           ),
           boxShadow: isSelected
@@ -279,11 +306,7 @@ class NotificationsPage extends ConsumerWidget {
                     color: item.iconBackgroundColor,
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: Icon(
-                    item.icon,
-                    color: item.iconColor,
-                    size: 22,
-                  ),
+                  child: Icon(item.icon, color: item.iconColor, size: 22),
                 ),
                 const SizedBox(width: 14),
 

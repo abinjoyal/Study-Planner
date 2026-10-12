@@ -9,24 +9,35 @@ class AppearancePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(profileSettingsNotifierProvider);
     final notifier = ref.read(profileSettingsNotifierProvider.notifier);
+    final isDark = settings.isDarkMode;
+    final activeColor = settings.activeColor;
+
+    final bgColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFFAF9F6);
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final cardBorder = isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9);
+    final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
+    final subtitleColor = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFAF9F6),
+      backgroundColor: bgColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFAF9F6),
+        backgroundColor: bgColor,
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded,
-              color: Color(0xFF0F172A), size: 20),
+          icon: Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: titleColor,
+            size: 20,
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text(
+        title: Text(
           'Appearance',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF0F172A),
+            color: titleColor,
           ),
         ),
       ),
@@ -36,20 +47,20 @@ class AppearancePage extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Theme Mode',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF0F172A),
+                  color: titleColor,
                 ),
               ),
               const SizedBox(height: 6),
-              const Text(
+              Text(
                 'Choose how StudyPlanner looks on your device',
                 style: TextStyle(
                   fontSize: 13.5,
-                  color: Color(0xFF64748B),
+                  color: subtitleColor,
                 ),
               ),
               const SizedBox(height: 18),
@@ -57,18 +68,24 @@ class AppearancePage extends ConsumerWidget {
               Row(
                 children: [
                   _buildThemeOption(
-                    context: context,
                     title: 'Light',
                     icon: Icons.light_mode_rounded,
-                    isSelected: !settings.isDarkMode,
+                    isSelected: !isDark,
+                    activeColor: activeColor,
+                    cardColor: cardColor,
+                    cardBorder: cardBorder,
+                    titleColor: titleColor,
                     onTap: () => notifier.toggleDarkMode(false),
                   ),
                   const SizedBox(width: 14),
                   _buildThemeOption(
-                    context: context,
                     title: 'Dark',
                     icon: Icons.dark_mode_rounded,
-                    isSelected: settings.isDarkMode,
+                    isSelected: isDark,
+                    activeColor: activeColor,
+                    cardColor: cardColor,
+                    cardBorder: cardBorder,
+                    titleColor: titleColor,
                     onTap: () => notifier.toggleDarkMode(true),
                   ),
                 ],
@@ -76,41 +93,72 @@ class AppearancePage extends ConsumerWidget {
 
               const SizedBox(height: 28),
 
-              const Text(
+              Text(
                 'Primary Accent Color',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF0F172A),
+                  color: titleColor,
                 ),
               ),
               const SizedBox(height: 6),
-              const Text(
-                'Current active brand accent is warm study orange',
+              Text(
+                'Current active brand accent is ${settings.activeColorName}',
                 style: TextStyle(
                   fontSize: 13.5,
-                  color: Color(0xFF64748B),
+                  color: subtitleColor,
                 ),
               ),
               const SizedBox(height: 16),
 
               Container(
-                padding: const EdgeInsets.all(18),
+                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: cardColor,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: const Color(0xFFF1F5F9),
+                    color: cardBorder,
                     width: 1.2,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildColorDot(const Color(0xFFF95700), 'Orange', true),
-                    _buildColorDot(const Color(0xFF2563EB), 'Blue', false),
-                    _buildColorDot(const Color(0xFF7C3AED), 'Purple', false),
-                    _buildColorDot(const Color(0xFF059669), 'Emerald', false),
+                    _buildColorDot(
+                      color: ProfileSettingsState.accentColors[0],
+                      name: 'Orange',
+                      isSelected: settings.primaryColorIndex == 0,
+                      isDark: isDark,
+                      onTap: () => notifier.setPrimaryColorIndex(0),
+                    ),
+                    _buildColorDot(
+                      color: ProfileSettingsState.accentColors[1],
+                      name: 'Blue',
+                      isSelected: settings.primaryColorIndex == 1,
+                      isDark: isDark,
+                      onTap: () => notifier.setPrimaryColorIndex(1),
+                    ),
+                    _buildColorDot(
+                      color: ProfileSettingsState.accentColors[2],
+                      name: 'Purple',
+                      isSelected: settings.primaryColorIndex == 2,
+                      isDark: isDark,
+                      onTap: () => notifier.setPrimaryColorIndex(2),
+                    ),
+                    _buildColorDot(
+                      color: ProfileSettingsState.accentColors[3],
+                      name: 'Emerald',
+                      isSelected: settings.primaryColorIndex == 3,
+                      isDark: isDark,
+                      onTap: () => notifier.setPrimaryColorIndex(3),
+                    ),
                   ],
                 ),
               ),
@@ -122,30 +170,32 @@ class AppearancePage extends ConsumerWidget {
   }
 
   Widget _buildThemeOption({
-    required BuildContext context,
     required String title,
     required IconData icon,
     required bool isSelected,
+    required Color activeColor,
+    required Color cardColor,
+    required Color cardBorder,
+    required Color titleColor,
     required VoidCallback onTap,
   }) {
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
-        child: Container(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 22),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: cardColor,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: isSelected
-                  ? const Color(0xFFF95700)
-                  : const Color(0xFFE2E8F0),
+              color: isSelected ? activeColor : cardBorder,
               width: isSelected ? 2 : 1.2,
             ),
             boxShadow: isSelected
                 ? [
                     BoxShadow(
-                      color: const Color(0xFFF95700).withValues(alpha: 0.2),
+                      color: activeColor.withValues(alpha: 0.25),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -156,9 +206,7 @@ class AppearancePage extends ConsumerWidget {
             children: [
               Icon(
                 icon,
-                color: isSelected
-                    ? const Color(0xFFF95700)
-                    : const Color(0xFF64748B),
+                color: isSelected ? activeColor : const Color(0xFF64748B),
                 size: 32,
               ),
               const SizedBox(height: 10),
@@ -167,9 +215,7 @@ class AppearancePage extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  color: isSelected
-                      ? const Color(0xFFF95700)
-                      : const Color(0xFF0F172A),
+                  color: isSelected ? activeColor : titleColor,
                 ),
               ),
             ],
@@ -179,41 +225,55 @@ class AppearancePage extends ConsumerWidget {
     );
   }
 
-  Widget _buildColorDot(Color color, String name, bool isSelected) {
-    return Column(
-      children: [
-        Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: isSelected ? const Color(0xFF0F172A) : Colors.transparent,
-              width: 3,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: color.withValues(alpha: 0.35),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
+  Widget _buildColorDot({
+    required Color color,
+    required String name,
+    required bool isSelected,
+    required bool isDark,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: 46,
+            height: 46,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isSelected
+                    ? (isDark ? Colors.white : const Color(0xFF0F172A))
+                    : Colors.transparent,
+                width: 3,
               ),
-            ],
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: isSelected ? 0.45 : 0.2),
+                  blurRadius: isSelected ? 10 : 6,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: isSelected
+                ? const Icon(Icons.check, color: Colors.white, size: 22)
+                : null,
           ),
-          child: isSelected
-              ? const Icon(Icons.check, color: Colors.white, size: 20)
-              : null,
-        ),
-        const SizedBox(height: 6),
-        Text(
-          name,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-            color: const Color(0xFF64748B),
+          const SizedBox(height: 8),
+          Text(
+            name,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+              color: isSelected
+                  ? (isDark ? Colors.white : const Color(0xFF0F172A))
+                  : const Color(0xFF64748B),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -166,45 +166,49 @@ class PrivacySecurityPage extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: const Color(0xFFF1F5F9),
           width: 1.2,
         ),
       ),
-      child: ListTile(
-        onTap: onTap,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        leading: Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: iconBg,
-            borderRadius: BorderRadius.circular(12),
+      child: Material(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        clipBehavior: Clip.antiAlias,
+        child: ListTile(
+          onTap: onTap,
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          leading: Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: iconBg,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: iconColor, size: 22),
           ),
-          child: Icon(icon, color: iconColor, size: 22),
-        ),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF0F172A),
+          title: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF0F172A),
+            ),
           ),
-        ),
-        subtitle: Text(
-          subtitle,
-          style: const TextStyle(
-            fontSize: 12.5,
-            color: Color(0xFF64748B),
+          subtitle: Text(
+            subtitle,
+            style: const TextStyle(
+              fontSize: 12.5,
+              color: Color(0xFF64748B),
+            ),
           ),
-        ),
-        trailing: const Icon(
-          Icons.arrow_forward_ios_rounded,
-          size: 15,
-          color: Color(0xFF94A3B8),
+          trailing: const Icon(
+            Icons.arrow_forward_ios_rounded,
+            size: 15,
+            color: Color(0xFF94A3B8),
+          ),
         ),
       ),
     );

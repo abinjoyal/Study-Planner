@@ -25,10 +25,7 @@ class ProfileMenuItem extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: const Color(0xFFF1F5F9),
-          width: 1.2,
-        ),
+        border: Border.all(color: const Color(0xFFF1F5F9), width: 1.2),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.02),
@@ -43,7 +40,10 @@ class ProfileMenuItem extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(20),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 14.0,
+            ),
             child: Row(
               children: [
                 // Icon in rounded container
@@ -54,11 +54,7 @@ class ProfileMenuItem extends StatelessWidget {
                     color: iconBackgroundColor,
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: Icon(
-                    icon,
-                    color: iconColor,
-                    size: 24,
-                  ),
+                  child: Icon(icon, color: iconColor, size: 24),
                 ),
                 const SizedBox(width: 14),
 

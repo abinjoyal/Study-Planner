@@ -98,10 +98,11 @@ class PlannerRemoteDataSourceImpl implements PlannerRemoteDataSource {
   @override
   Future<List<PlannerDayModel>> getWeeklySchedule(DateTime startDate) async {
     await Future.delayed(const Duration(milliseconds: 150));
-    // Generate 7 days (Mon-Sun around date)
-    final monday = startDate.subtract(Duration(days: startDate.weekday - 1));
+    final now = DateTime.now();
+    final centerDate = DateTime(now.year, now.month, now.day);
+    final firstDay = centerDate.subtract(const Duration(days: 3));
     return List.generate(7, (i) {
-      final date = monday.add(Duration(days: i));
+      final date = firstDay.add(Duration(days: i));
       return PlannerDayModel.fromDate(
         date,
         isSelected: date.year == startDate.year &&

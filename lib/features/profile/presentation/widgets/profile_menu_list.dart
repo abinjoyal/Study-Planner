@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../pages/appearance_page.dart';
 import '../pages/help_support_page.dart';
 import '../pages/notification_settings_page.dart';
 import '../pages/personal_information_page.dart';
 import '../pages/privacy_security_page.dart';
 import '../pages/study_goals_page.dart';
-import '../providers/profile_settings_provider.dart';
 import 'logout_button.dart';
 import 'profile_menu_item.dart';
 
-class ProfileMenuList extends ConsumerWidget {
+class ProfileMenuList extends StatelessWidget {
   final Future<void> Function() onLogout;
 
   const ProfileMenuList({
@@ -18,19 +16,18 @@ class ProfileMenuList extends ConsumerWidget {
     required this.onLogout,
   });
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(profileSettingsNotifierProvider);
-    final primaryColor = settings.activeColor;
-    final primaryBgColor = primaryColor.withValues(alpha: 0.12);
+  static const Color appBrandColor = Color(0xFFF95700);
+  static const Color appBrandBgColor = Color(0xFFFFEDD5);
 
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         // 1. Personal Information
         ProfileMenuItem(
           icon: Icons.person_rounded,
-          iconColor: primaryColor,
-          iconBackgroundColor: primaryBgColor,
+          iconColor: appBrandColor,
+          iconBackgroundColor: appBrandBgColor,
           title: 'Personal Information',
           subtitle: 'Update your name, email and degree',
           onTap: () {
@@ -45,8 +42,8 @@ class ProfileMenuList extends ConsumerWidget {
         // 2. Notifications & Reminders
         ProfileMenuItem(
           icon: Icons.notifications_rounded,
-          iconColor: primaryColor,
-          iconBackgroundColor: primaryBgColor,
+          iconColor: appBrandColor,
+          iconBackgroundColor: appBrandBgColor,
           title: 'Notifications & Reminders',
           subtitle: 'Manage your study reminders',
           onTap: () {
@@ -61,8 +58,8 @@ class ProfileMenuList extends ConsumerWidget {
         // 3. Study Goals
         ProfileMenuItem(
           icon: Icons.track_changes_rounded,
-          iconColor: primaryColor,
-          iconBackgroundColor: primaryBgColor,
+          iconColor: appBrandColor,
+          iconBackgroundColor: appBrandBgColor,
           title: 'Study Goals',
           subtitle: 'Set and track your learning goals',
           onTap: () {
@@ -77,8 +74,8 @@ class ProfileMenuList extends ConsumerWidget {
         // 4. Appearance
         ProfileMenuItem(
           icon: Icons.palette_rounded,
-          iconColor: primaryColor,
-          iconBackgroundColor: primaryBgColor,
+          iconColor: appBrandColor,
+          iconBackgroundColor: appBrandBgColor,
           title: 'Appearance',
           subtitle: 'Theme, color and display settings',
           onTap: () {
@@ -93,8 +90,8 @@ class ProfileMenuList extends ConsumerWidget {
         // 5. Privacy & Security
         ProfileMenuItem(
           icon: Icons.shield_rounded,
-          iconColor: primaryColor,
-          iconBackgroundColor: primaryBgColor,
+          iconColor: appBrandColor,
+          iconBackgroundColor: appBrandBgColor,
           title: 'Privacy & Security',
           subtitle: 'Manage your data and privacy',
           onTap: () {
@@ -109,8 +106,8 @@ class ProfileMenuList extends ConsumerWidget {
         // 6. Help & Support
         ProfileMenuItem(
           icon: Icons.help_rounded,
-          iconColor: primaryColor,
-          iconBackgroundColor: primaryBgColor,
+          iconColor: appBrandColor,
+          iconBackgroundColor: appBrandBgColor,
           title: 'Help & Support',
           subtitle: 'Get help or contact us',
           onTap: () {

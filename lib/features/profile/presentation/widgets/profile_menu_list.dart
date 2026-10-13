@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../pages/appearance_page.dart';
 import '../pages/help_support_page.dart';
 import '../pages/notification_settings_page.dart';
 import '../pages/personal_information_page.dart';
 import '../pages/privacy_security_page.dart';
 import '../pages/study_goals_page.dart';
+import '../providers/profile_settings_provider.dart';
 import 'logout_button.dart';
 import 'profile_menu_item.dart';
 
-class ProfileMenuList extends StatelessWidget {
+class ProfileMenuList extends ConsumerWidget {
   final Future<void> Function() onLogout;
 
   const ProfileMenuList({
@@ -17,14 +19,18 @@ class ProfileMenuList extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(profileSettingsNotifierProvider);
+    final primaryColor = settings.activeColor;
+    final primaryBgColor = primaryColor.withValues(alpha: 0.12);
+
     return Column(
       children: [
         // 1. Personal Information
         ProfileMenuItem(
           icon: Icons.person_rounded,
-          iconColor: const Color(0xFF0284C7),
-          iconBackgroundColor: const Color(0xFFE0F2FE),
+          iconColor: primaryColor,
+          iconBackgroundColor: primaryBgColor,
           title: 'Personal Information',
           subtitle: 'Update your name, email and degree',
           onTap: () {
@@ -39,8 +45,8 @@ class ProfileMenuList extends StatelessWidget {
         // 2. Notifications & Reminders
         ProfileMenuItem(
           icon: Icons.notifications_rounded,
-          iconColor: const Color(0xFFEA580C),
-          iconBackgroundColor: const Color(0xFFFFEDD5),
+          iconColor: primaryColor,
+          iconBackgroundColor: primaryBgColor,
           title: 'Notifications & Reminders',
           subtitle: 'Manage your study reminders',
           onTap: () {
@@ -55,8 +61,8 @@ class ProfileMenuList extends StatelessWidget {
         // 3. Study Goals
         ProfileMenuItem(
           icon: Icons.track_changes_rounded,
-          iconColor: const Color(0xFF16A34A),
-          iconBackgroundColor: const Color(0xFFDCFCE7),
+          iconColor: primaryColor,
+          iconBackgroundColor: primaryBgColor,
           title: 'Study Goals',
           subtitle: 'Set and track your learning goals',
           onTap: () {
@@ -71,8 +77,8 @@ class ProfileMenuList extends StatelessWidget {
         // 4. Appearance
         ProfileMenuItem(
           icon: Icons.palette_rounded,
-          iconColor: const Color(0xFF9333EA),
-          iconBackgroundColor: const Color(0xFFF3E8FF),
+          iconColor: primaryColor,
+          iconBackgroundColor: primaryBgColor,
           title: 'Appearance',
           subtitle: 'Theme, color and display settings',
           onTap: () {
@@ -87,8 +93,8 @@ class ProfileMenuList extends StatelessWidget {
         // 5. Privacy & Security
         ProfileMenuItem(
           icon: Icons.shield_rounded,
-          iconColor: const Color(0xFFE11D48),
-          iconBackgroundColor: const Color(0xFFFFE4E6),
+          iconColor: primaryColor,
+          iconBackgroundColor: primaryBgColor,
           title: 'Privacy & Security',
           subtitle: 'Manage your data and privacy',
           onTap: () {
@@ -103,8 +109,8 @@ class ProfileMenuList extends StatelessWidget {
         // 6. Help & Support
         ProfileMenuItem(
           icon: Icons.help_rounded,
-          iconColor: const Color(0xFF0284C7),
-          iconBackgroundColor: const Color(0xFFE0F2FE),
+          iconColor: primaryColor,
+          iconBackgroundColor: primaryBgColor,
           title: 'Help & Support',
           subtitle: 'Get help or contact us',
           onTap: () {

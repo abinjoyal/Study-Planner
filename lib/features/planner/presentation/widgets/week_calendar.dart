@@ -38,17 +38,21 @@ class WeekCalendar extends StatelessWidget {
     );
   }
 
-  List<PlannerDay> _generateDefaultWeek(DateTime date) {
-    final monday = date.subtract(Duration(days: date.weekday - 1));
-    final dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  List<PlannerDay> _generateDefaultWeek(DateTime selected) {
+    final today = DateTime.now();
+    final centerDate = DateTime(today.year, today.month, today.day);
+    final startDate = centerDate.subtract(const Duration(days: 3));
+    const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
     return List.generate(7, (index) {
-      final current = monday.add(Duration(days: index));
+      final current = startDate.add(Duration(days: index));
       return PlannerDay(
         date: current,
-        dayName: dayNames[index],
+        dayName: dayNames[current.weekday - 1],
         dayNumber: current.day,
-        isSelected: current.day == date.day,
+        isSelected: current.year == selected.year &&
+            current.month == selected.month &&
+            current.day == selected.day,
       );
     });
   }

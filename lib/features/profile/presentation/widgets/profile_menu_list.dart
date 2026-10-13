@@ -123,9 +123,9 @@ class ProfileMenuList extends ConsumerWidget {
         ),
 
         // 7. Log Out Action
-        LogoutButton(
-          onLogout: onLogout,
-        ),
+        // LogoutButton(
+        //   onLogout: onLogout,
+        // ),
       ],
     );
   }

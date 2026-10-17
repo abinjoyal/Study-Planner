@@ -5,7 +5,6 @@ import '../pages/notification_settings_page.dart';
 import '../pages/personal_information_page.dart';
 import '../pages/privacy_security_page.dart';
 import '../pages/study_goals_page.dart';
-import 'logout_button.dart';
 import 'profile_menu_item.dart';
 
 class ProfileMenuList extends StatelessWidget {

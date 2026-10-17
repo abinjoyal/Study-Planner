@@ -165,7 +165,7 @@ class HelpSupportPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     const Text(
-                      'Crafted with ❤️ for students worldwide',
+                      'Crafted for students worldwide',
                       style: TextStyle(fontSize: 12, color: Color(0xFFCBD5E1)),
                     ),
                   ],

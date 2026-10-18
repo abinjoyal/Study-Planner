@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../notifications/presentation/pages/notifications_page.dart';
 import '../../../planner/presentation/widgets/week_calendar.dart';
 import '../../../splash/widgets/splash_background.dart';
 import '../providers/home_provider.dart';
 import '../widgets/add_task_bottom_sheet.dart';
 import '../widgets/home_header.dart';
-import '../widgets/motivational_card.dart';
 import '../widgets/progress_card.dart';
 import '../widgets/today_tasks_section.dart';
 

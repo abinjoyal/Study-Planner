@@ -22,7 +22,8 @@ class HomePage extends ConsumerWidget {
     final dashboard = state.dashboard;
     final todayTasks = dashboard?.todayTasks ?? [];
     final completedCount =
-        dashboard?.completedTasksCount ?? todayTasks.where((t) => t.isCompleted).length;
+        dashboard?.completedTasksCount ??
+        todayTasks.where((t) => t.isCompleted).length;
     final totalCount = dashboard?.totalTasksCount ?? todayTasks.length;
     final progress = totalCount > 0 ? (completedCount / totalCount) : 0.0;
 
@@ -94,7 +95,7 @@ class HomePage extends ConsumerWidget {
                       const SizedBox(height: 12),
 
                       // Motivational Card
-                      const MotivationalCard(),
+                      //const MotivationalCard(),
                       const SizedBox(height: 32),
                     ],
                   ),

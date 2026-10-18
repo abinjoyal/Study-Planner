@@ -5,6 +5,7 @@ import '../../../notifications/presentation/pages/notifications_page.dart';
 import '../../../planner/presentation/widgets/week_calendar.dart';
 import '../../../splash/widgets/splash_background.dart';
 import '../providers/home_provider.dart';
+import '../widgets/add_task_bottom_sheet.dart';
 import '../widgets/home_header.dart';
 import '../widgets/motivational_card.dart';
 import '../widgets/progress_card.dart';
@@ -19,6 +20,11 @@ class HomePage extends ConsumerWidget {
     final notifier = ref.read(homeNotifierProvider.notifier);
 
     final dashboard = state.dashboard;
+    final todayTasks = dashboard?.todayTasks ?? [];
+    final completedCount =
+        dashboard?.completedTasksCount ?? todayTasks.where((t) => t.isCompleted).length;
+    final totalCount = dashboard?.totalTasksCount ?? todayTasks.length;
+    final progress = totalCount > 0 ? (completedCount / totalCount) : 0.0;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFAF9F6),
@@ -41,7 +47,7 @@ class HomePage extends ConsumerWidget {
                       HomeHeader(
                         studentName: dashboard?.studentName ?? 'Student',
                         hasNotification:
-                            dashboard?.hasUnreadNotifications ?? true,
+                            dashboard?.hasUnreadNotifications ?? false,
                         onNotificationTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
@@ -64,17 +70,25 @@ class HomePage extends ConsumerWidget {
 
                       // 3. Progress Banner
                       ProgressCard(
-                        completedTasks: dashboard?.completedTasksCount ?? 3,
-                        totalTasks: dashboard?.totalTasksCount ?? 6,
-                        progress: dashboard?.progressPercentage ?? 0.5,
+                        completedTasks: completedCount,
+                        totalTasks: totalCount,
+                        progress: progress,
                       ),
                       const SizedBox(height: 24),
 
                       // 4. Today's Tasks
                       TodayTasksSection(
-                        tasks: dashboard?.todayTasks ?? [],
+                        tasks: todayTasks,
                         onToggleTask: (taskId) {
                           notifier.toggleTaskStatus(taskId);
+                        },
+                        onAddTask: () {
+                          AddTaskBottomSheet.show(
+                            context,
+                            onTaskAdded: (newTask) {
+                              notifier.addTask(newTask);
+                            },
+                          );
                         },
                       ),
                       const SizedBox(height: 12),

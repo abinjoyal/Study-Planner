@@ -2,7 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/datasources/home_remote_datasource.dart';
 import '../../data/repositories/home_repository_impl.dart';
+import '../../domain/entities/dashboard.dart';
+import '../../domain/entities/study_task.dart';
 import '../../domain/repositories/home_repository.dart';
+import '../../domain/usecases/add_task.dart';
 import '../../domain/usecases/get_dashboard.dart';
 import '../../domain/usecases/update_task_status.dart';
 import 'home_state.dart';
@@ -27,14 +30,21 @@ final updateTaskStatusUseCaseProvider = Provider<UpdateTaskStatus>((ref) {
   return UpdateTaskStatus(repository);
 });
 
+final addTaskUseCaseProvider = Provider<AddTask>((ref) {
+  final repository = ref.watch(homeRepositoryProvider);
+  return AddTask(repository);
+});
+
 // Main Home StateNotifier & Provider
 class HomeNotifier extends StateNotifier<HomeState> {
   final GetDashboard getDashboardUseCase;
   final UpdateTaskStatus updateTaskStatusUseCase;
+  final AddTask addTaskUseCase;
 
   HomeNotifier({
     required this.getDashboardUseCase,
     required this.updateTaskStatusUseCase,
+    required this.addTaskUseCase,
   }) : super(const HomeState()) {
     loadDashboard();
   }
@@ -52,6 +62,36 @@ class HomeNotifier extends StateNotifier<HomeState> {
         isLoading: false,
         errorMessage: e.toString(),
       );
+    }
+  }
+
+  Future<void> addTask(StudyTask task) async {
+    final currentDashboard = state.dashboard;
+    final updatedTasks = [
+      if (currentDashboard != null) ...currentDashboard.todayTasks,
+      task,
+    ];
+    final completedCount = updatedTasks.where((t) => t.isCompleted).length;
+
+    state = state.copyWith(
+      dashboard: currentDashboard?.copyWith(
+            todayTasks: updatedTasks,
+            totalTasksCount: updatedTasks.length,
+            completedTasksCount: completedCount,
+          ) ??
+          Dashboard(
+            studentName: 'Student',
+            completedTasksCount: completedCount,
+            totalTasksCount: updatedTasks.length,
+            todayTasks: updatedTasks,
+            hasUnreadNotifications: false,
+          ),
+    );
+
+    try {
+      await addTaskUseCase(task);
+    } catch (e) {
+      loadDashboard();
     }
   }
 
@@ -102,8 +142,10 @@ final homeNotifierProvider =
     StateNotifierProvider<HomeNotifier, HomeState>((ref) {
   final getDashboard = ref.watch(getDashboardUseCaseProvider);
   final updateTaskStatus = ref.watch(updateTaskStatusUseCaseProvider);
+  final addTask = ref.watch(addTaskUseCaseProvider);
   return HomeNotifier(
     getDashboardUseCase: getDashboard,
     updateTaskStatusUseCase: updateTaskStatus,
+    addTaskUseCase: addTask,
   );
 });

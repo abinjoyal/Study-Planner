@@ -5,4 +5,6 @@ abstract class HomeRepository {
   Future<Dashboard> getDashboard();
   Future<List<StudyTask>> getTodayTasks();
   Future<void> updateTaskStatus(String taskId, bool isCompleted);
+  Future<void> addTask(StudyTask task);
 }
+

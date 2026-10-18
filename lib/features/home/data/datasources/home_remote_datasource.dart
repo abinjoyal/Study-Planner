@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import '../models/dashboard_model.dart';
 import '../models/task_model.dart';
 
@@ -6,48 +5,11 @@ abstract class HomeRemoteDataSource {
   Future<DashboardModel> fetchDashboardData();
   Future<List<TaskModel>> fetchTodayTasks();
   Future<void> updateTaskCompletionStatus(String taskId, bool isCompleted);
+  Future<void> addTask(TaskModel task);
 }
 
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
-  // Mock data matching the design screenshot
-  List<TaskModel> _mockTasks = [
-    const TaskModel(
-      id: '1',
-      title: 'Maths - Chapter 4',
-      description: 'Complete exercises 1-10',
-      iconSymbol: 'Σ',
-      iconBackgroundColor: Color(0xFF3B82F6),
-      isCompleted: true,
-      statusTag: 'In Progress',
-    ),
-    const TaskModel(
-      id: '2',
-      title: 'Physics - Notes Review',
-      description: 'Read and make short notes',
-      iconSymbol: '⚛',
-      iconBackgroundColor: Color(0xFFA855F7),
-      isCompleted: false,
-      estimatedTime: '2h',
-    ),
-    const TaskModel(
-      id: '3',
-      title: 'English - Practice',
-      description: 'Solve previous year questions',
-      iconSymbol: '📖',
-      iconBackgroundColor: Color(0xFF10B981),
-      isCompleted: false,
-      estimatedTime: '1h',
-    ),
-    const TaskModel(
-      id: '4',
-      title: 'Chemistry - Chapter 3',
-      description: 'Watch lecture and make notes',
-      iconSymbol: '🧪',
-      iconBackgroundColor: Color(0xFFF59E0B),
-      isCompleted: false,
-      estimatedTime: '1h',
-    ),
-  ];
+  List<TaskModel> _mockTasks = [];
 
   @override
   Future<DashboardModel> fetchDashboardData() async {
@@ -56,9 +18,9 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     return DashboardModel(
       studentName: 'Student',
       completedTasksCount: completedCount,
-      totalTasksCount: 6,
-      todayTasks: _mockTasks,
-      hasUnreadNotifications: true,
+      totalTasksCount: _mockTasks.length,
+      todayTasks: List.unmodifiable(_mockTasks),
+      hasUnreadNotifications: false,
     );
   }
 
@@ -87,5 +49,11 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
       }
       return t;
     }).toList();
+  }
+
+  @override
+  Future<void> addTask(TaskModel task) async {
+    await Future.delayed(const Duration(milliseconds: 150));
+    _mockTasks.add(task);
   }
 }

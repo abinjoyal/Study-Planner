@@ -11,62 +11,7 @@ abstract class PlannerRemoteDataSource {
 }
 
 class PlannerRemoteDataSourceImpl implements PlannerRemoteDataSource {
-  final List<StudySessionModel> _mockSessions = [
-    StudySessionModel(
-      id: '1',
-      title: 'Maths',
-      subtitle: 'Chapter 4 - Exercises',
-      timeLabel: '08:00',
-      duration: '1h',
-      subjectType: SubjectType.maths,
-      date: DateTime.now(),
-    ),
-    StudySessionModel(
-      id: '2',
-      title: 'Physics',
-      subtitle: 'Watch lecture',
-      timeLabel: '10:00',
-      duration: '1h',
-      subjectType: SubjectType.physics,
-      date: DateTime.now(),
-    ),
-    StudySessionModel(
-      id: '3',
-      title: 'Break',
-      subtitle: 'Rest and relax',
-      timeLabel: '12:00',
-      duration: '30m',
-      subjectType: SubjectType.breakTime,
-      date: DateTime.now(),
-    ),
-    StudySessionModel(
-      id: '4',
-      title: 'Chemistry',
-      subtitle: 'Make short notes',
-      timeLabel: '01:00',
-      duration: '1h',
-      subjectType: SubjectType.chemistry,
-      date: DateTime.now(),
-    ),
-    StudySessionModel(
-      id: '5',
-      title: 'English',
-      subtitle: 'Practice questions',
-      timeLabel: '03:00',
-      duration: '1h',
-      subjectType: SubjectType.english,
-      date: DateTime.now(),
-    ),
-    StudySessionModel(
-      id: '6',
-      title: 'Revision',
-      subtitle: 'Revise today\'s topics',
-      timeLabel: '05:00',
-      duration: '1h',
-      subjectType: SubjectType.revision,
-      date: DateTime.now(),
-    ),
-  ];
+  final List<StudySessionModel> _mockSessions = [];
 
   @override
   Future<List<StudySessionModel>> getStudySessions(DateTime date) async {
@@ -105,7 +50,8 @@ class PlannerRemoteDataSourceImpl implements PlannerRemoteDataSource {
       final date = firstDay.add(Duration(days: i));
       return PlannerDayModel.fromDate(
         date,
-        isSelected: date.year == startDate.year &&
+        isSelected:
+            date.year == startDate.year &&
             date.month == startDate.month &&
             date.day == startDate.day,
       );

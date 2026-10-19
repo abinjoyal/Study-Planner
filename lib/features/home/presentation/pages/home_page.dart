@@ -25,6 +25,16 @@ class HomePage extends ConsumerWidget {
     final totalCount = dashboard?.totalTasksCount ?? todayTasks.length;
     final progress = totalCount > 0 ? (completedCount / totalCount) : 0.0;
 
+    final selectedDate = state.selectedDate ?? DateTime.now();
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final selectedDay = DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+    );
+    final canAddTask = !selectedDay.isBefore(today);
+
     return Scaffold(
       backgroundColor: const Color(0xFFFAF9F6),
       body: SplashBackground(
@@ -60,7 +70,7 @@ class HomePage extends ConsumerWidget {
                       // 2. Week Calendar Strip
                       WeekCalendar(
                         days: const [],
-                        selectedDate: state.selectedDate ?? DateTime.now(),
+                        selectedDate: selectedDate,
                         onDateSelected: (date) {
                           notifier.selectDate(date);
                         },
@@ -81,14 +91,16 @@ class HomePage extends ConsumerWidget {
                         onToggleTask: (taskId) {
                           notifier.toggleTaskStatus(taskId);
                         },
-                        onAddTask: () {
-                          AddTaskBottomSheet.show(
-                            context,
-                            onTaskAdded: (newTask) {
-                              notifier.addTask(newTask);
-                            },
-                          );
-                        },
+                        onAddTask: canAddTask
+                            ? () {
+                                AddTaskBottomSheet.show(
+                                  context,
+                                  onTaskAdded: (newTask) {
+                                    notifier.addTask(newTask);
+                                  },
+                                );
+                              }
+                            : null,
                       ),
                       const SizedBox(height: 12),
 

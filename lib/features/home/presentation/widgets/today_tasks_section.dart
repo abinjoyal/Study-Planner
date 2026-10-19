@@ -108,9 +108,11 @@ class TodayTasksSection extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  'Tap "+ Add" to add your first study task!',
-                  style: TextStyle(
+                Text(
+                  onAddTask != null
+                      ? 'Tap "+ Add" to add your first study task!'
+                      : 'No tasks scheduled for this day',
+                  style: const TextStyle(
                     fontSize: 13,
                     color: Color(0xFF64748B),
                   ),

@@ -15,6 +15,16 @@ class PlannerPage extends ConsumerWidget {
     final state = ref.watch(plannerNotifierProvider);
     final notifier = ref.read(plannerNotifierProvider.notifier);
 
+    // Only allow adding sessions for today or future dates
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final selectedDay = DateTime(
+      state.selectedDate.year,
+      state.selectedDate.month,
+      state.selectedDate.day,
+    );
+    final canAddSession = !selectedDay.isBefore(today);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FE),
       body: SafeArea(
@@ -43,6 +53,7 @@ class PlannerPage extends ConsumerWidget {
                             children: [
                               // Header Title, Calendar & Add Session Buttons
                               PlannerHeader(
+                                showAddButton: canAddSession,
                                 onCalendarTap: () async {
                                   final picked = await showDatePicker(
                                     context: context,

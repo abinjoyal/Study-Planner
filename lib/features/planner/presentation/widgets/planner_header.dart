@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 
 class PlannerHeader extends StatelessWidget {
   final VoidCallback? onCalendarTap;
+  final VoidCallback? onAddTap;
 
-  const PlannerHeader({
-    super.key,
-    this.onCalendarTap,
-  });
+  const PlannerHeader({super.key, this.onCalendarTap, this.onAddTap});
 
   @override
   Widget build(BuildContext context) {
@@ -23,29 +21,58 @@ class PlannerHeader extends StatelessWidget {
             letterSpacing: -0.5,
           ),
         ),
-        InkWell(
-          onTap: onCalendarTap,
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: Colors.white,
+        Row(
+          children: [
+            InkWell(
+              onTap: onCalendarTap,
               borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
+              child: Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.04),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-              ],
+                child: const Icon(
+                  Icons.calendar_month_rounded,
+                  color: Color(0xFF1B1C4B),
+                  size: 20,
+                ),
+              ),
             ),
-            child: const Icon(
-              Icons.calendar_month_rounded,
-              color: Color(0xFF1B1C4B),
-              size: 22,
+            const SizedBox(width: 10),
+            InkWell(
+              onTap: onAddTap,
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFF6E1F),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFFF6E1F).withValues(alpha: 0.35),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.add_rounded,
+                  color: Colors.white,
+                  size: 24,
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ],
     );

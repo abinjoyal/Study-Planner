@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/planner_provider.dart';
-import '../widgets/add_session_button.dart';
 import '../widgets/planner_header.dart';
 import '../widgets/study_schedule_list.dart';
 import '../widgets/week_calendar.dart';
@@ -35,7 +34,7 @@ class PlannerPage extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Header Title & Calendar Button
+                      // Header Title, Calendar & Add Session Buttons
                       PlannerHeader(
                         onCalendarTap: () async {
                           final picked = await showDatePicker(
@@ -47,6 +46,13 @@ class PlannerPage extends ConsumerWidget {
                           if (picked != null) {
                             notifier.selectDate(picked);
                           }
+                        },
+                        onAddTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const AddStudySessionPage(),
+                            ),
+                          );
                         },
                       ),
                       const SizedBox(height: 20),
@@ -74,18 +80,6 @@ class PlannerPage extends ConsumerWidget {
                         },
                         onDeleteSession: (id) {
                           notifier.removeSession(id);
-                        },
-                      ),
-                      const SizedBox(height: 28),
-
-                      // Add Session Action Button
-                      AddSessionButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const AddStudySessionPage(),
-                            ),
-                          );
                         },
                       ),
                       const SizedBox(height: 24),

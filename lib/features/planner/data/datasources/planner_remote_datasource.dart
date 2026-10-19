@@ -1,6 +1,5 @@
 import '../models/planner_day_model.dart';
 import '../models/study_session_model.dart';
-import '../../domain/entities/study_session.dart';
 
 abstract class PlannerRemoteDataSource {
   Future<List<StudySessionModel>> getStudySessions(DateTime date);

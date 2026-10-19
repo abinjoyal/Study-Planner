@@ -74,51 +74,39 @@ class TodayTasksSection extends StatelessWidget {
 
         // List of Task Cards or Empty State
         if (tasks.isEmpty)
-          Container(
+          SizedBox(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFE2E8F0)),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 52,
-                  height: 52,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFF4EE),
-                    shape: BoxShape.circle,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 148.0,
+                horizontal: 16.0,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text(
+                    'No Tasks for Today',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF475569),
+                    ),
                   ),
-                  child: const Icon(
-                    Icons.assignment_outlined,
-                    color: Color(0xFFF95700),
-                    size: 26,
+                  const SizedBox(height: 6),
+                  Text(
+                    onAddTask != null
+                        ? 'Add your first study task!'
+                        : 'No tasks scheduled for this day',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Color.fromARGB(255, 65, 67, 71),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  'No Tasks for Today',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF0F172A),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  onAddTask != null
-                      ? 'Tap "+ Add" to add your first study task!'
-                      : 'No tasks scheduled for this day',
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Color(0xFF64748B),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+                ],
+              ),
             ),
           )
         else

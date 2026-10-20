@@ -46,9 +46,9 @@ class FocusStatsState {
 
   const FocusStatsState({
     this.isLoading = true,
-    this.totalFocusFormatted = '2h 30m',
-    this.totalFocusMinutes = 150,
-    this.sessionCount = 4,
+    this.totalFocusFormatted = '0m',
+    this.totalFocusMinutes = 0,
+    this.sessionCount = 0,
     this.history = const [],
   });
 

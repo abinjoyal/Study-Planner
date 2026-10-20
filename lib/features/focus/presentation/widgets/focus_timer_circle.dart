@@ -28,7 +28,7 @@ class FocusTimerCircle extends StatelessWidget {
             size: const Size(270, 270),
             painter: _TimerCirclePainter(
               progress: progress,
-              trackColor: const Color(0xFFEEF2F6),
+              trackColor: const Color.fromARGB(255, 180, 180, 180),
               progressColor: const Color(0xFFFF6E1F),
             ),
           ),
@@ -97,14 +97,16 @@ class _TimerCirclePainter extends CustomPainter {
       ..strokeWidth = 14
       ..strokeCap = StrokeCap.round;
 
-    final sweepAngle = 2 * pi * progress;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -pi / 2,
-      sweepAngle,
-      false,
-      progressPaint,
-    );
+    if (progress > 0) {
+      final sweepAngle = 2 * pi * progress;
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        -pi / 2,
+        sweepAngle,
+        false,
+        progressPaint,
+      );
+    }
   }
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../notifications/presentation/pages/notifications_page.dart';
 import '../../../planner/presentation/widgets/week_calendar.dart';
+import '../../../profile/presentation/providers/profile_provider.dart';
 import '../../../splash/widgets/splash_background.dart';
 import '../providers/home_provider.dart';
 import '../widgets/add_task_bottom_sheet.dart';
@@ -16,6 +17,8 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(homeNotifierProvider);
     final notifier = ref.read(homeNotifierProvider.notifier);
+    final profileState = ref.watch(profileNotifierProvider);
+    final profile = profileState.profile;
 
     final dashboard = state.dashboard;
     final todayTasks = dashboard?.todayTasks ?? [];
@@ -34,6 +37,10 @@ class HomePage extends ConsumerWidget {
       selectedDate.day,
     );
     final canAddTask = !selectedDay.isBefore(today);
+
+    final displayName = profile?.name.isNotEmpty == true
+        ? profile!.name
+        : (dashboard?.studentName ?? 'Student');
 
     return Scaffold(
       backgroundColor: const Color(0xFFFAF9F6),
@@ -54,7 +61,8 @@ class HomePage extends ConsumerWidget {
                       const SizedBox(height: 12),
                       // 1. Heading
                       HomeHeader(
-                        studentName: dashboard?.studentName ?? 'Student',
+                        studentName: displayName,
+                        avatarUrl: profile?.avatarUrl,
                         hasNotification:
                             dashboard?.hasUnreadNotifications ?? false,
                         onNotificationTap: () {
@@ -64,6 +72,7 @@ class HomePage extends ConsumerWidget {
                             ),
                           );
                         },
+                        onAvatarTap: () => notifier.setNavIndex(4),
                       ),
                       const SizedBox(height: 16),
 

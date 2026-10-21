@@ -1,5 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:studyplanner/features/focus/presentation/providers/focus_stats_provider.dart';
+import 'package:studyplanner/features/home/presentation/providers/home_provider.dart';
+import 'package:studyplanner/features/planner/presentation/providers/planner_provider.dart';
 import '../../data/datasources/progress_local_datasource.dart';
 import '../../data/datasources/progress_remote_datasource.dart';
 import '../../data/repositories/progress_repository_impl.dart';
@@ -16,7 +19,11 @@ import 'progress_filter_provider.dart';
 // DI Providers
 final progressLocalDataSourceProvider =
     Provider<ProgressLocalDataSource>((ref) {
-  return ProgressLocalDataSourceImpl();
+  return ProgressLocalDataSourceImpl(
+    focusLocalDataSource: ref.watch(focusLocalDataSourceProvider),
+    homeRemoteDataSource: ref.watch(homeRemoteDataSourceProvider),
+    plannerRemoteDataSource: ref.watch(plannerRemoteDataSourceProvider),
+  );
 });
 
 final progressRemoteDataSourceProvider =
@@ -49,6 +56,12 @@ final getWeeklyGoalUseCaseProvider = Provider<GetWeeklyGoal>((ref) {
 
 final getProgressHistoryUseCaseProvider = Provider<GetProgressHistory>((ref) {
   return GetProgressHistory(ref.watch(progressRepositoryProvider));
+});
+
+final progressHistoryProvider =
+    FutureProvider<List<Map<String, dynamic>>>((ref) async {
+  final useCase = ref.watch(getProgressHistoryUseCaseProvider);
+  return await useCase();
 });
 
 class ProgressState {
@@ -106,6 +119,7 @@ class ProgressNotifier extends StateNotifier<ProgressState> {
   Future<void> loadData() async {
     state = state.copyWith(isLoading: true);
     try {
+      ref.invalidate(progressHistoryProvider);
       final period = ref.read(progressFilterProvider);
       final summary = await getProgressSummaryUseCase(
         period,

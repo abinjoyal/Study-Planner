@@ -31,7 +31,11 @@ class ProgressPage extends ConsumerWidget {
                 child: CircularProgressIndicator(color: Color(0xFFFF6E1F)),
               )
             : RefreshIndicator(
-                onRefresh: () => notifier.loadData(),
+                onRefresh: () async {
+                  await notifier.loadData();
+                  ref.invalidate(subjectProgressProvider);
+                  ref.invalidate(progressHistoryProvider);
+                },
                 color: const Color(0xFFFF6E1F),
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
@@ -139,21 +143,25 @@ class ProgressPage extends ConsumerWidget {
                       subjectsAsync.when(
                         data: (subjects) => SubjectProgressSection(
                           subjects: subjects,
-                          onSeeAllTap: () {
-                            Navigator.of(context).push(
+                          onSeeAllTap: () async {
+                            await Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => const ProgressDetailsPage(),
                               ),
                             );
+                            notifier.loadData();
+                            ref.invalidate(subjectProgressProvider);
                           },
-                          onSubjectTap: (subject) {
-                            Navigator.of(context).push(
+                          onSubjectTap: (subject) async {
+                            await Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => ProgressDetailsPage(
                                   selectedSubject: subject,
                                 ),
                               ),
                             );
+                            notifier.loadData();
+                            ref.invalidate(subjectProgressProvider);
                           },
                         ),
                         loading: () => const Center(

@@ -1,141 +1,427 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:studyplanner/features/focus/data/datasources/focus_local_datasource.dart';
+import 'package:studyplanner/features/focus/domain/entities/focus_session.dart';
+import 'package:studyplanner/features/home/data/datasources/home_remote_datasource.dart';
+import 'package:studyplanner/features/home/data/models/task_model.dart';
+import 'package:studyplanner/features/planner/data/datasources/planner_remote_datasource.dart';
+import 'package:studyplanner/features/planner/domain/entities/study_session.dart';
+import '../../domain/repositories/progress_repository.dart';
 import '../models/progress_summary_model.dart';
 import '../models/study_streak_model.dart';
 import '../models/subject_progress_model.dart';
-import '../../domain/repositories/progress_repository.dart';
 
 abstract class ProgressLocalDataSource {
   Future<ProgressSummaryModel> getSummary(ProgressPeriod period, {DateTime? customDate});
   Future<List<SubjectProgressModel>> getSubjectProgress(ProgressPeriod period, {DateTime? customDate});
   Future<StudyStreakModel> getStreak();
   Future<double> getWeeklyGoalPercentage();
+  Future<List<Map<String, dynamic>>> getProgressHistory({DateTime? weekStartDate});
 }
 
 class ProgressLocalDataSourceImpl implements ProgressLocalDataSource {
-  final List<SubjectProgressModel> _mockSubjects = [
-    const SubjectProgressModel(
-      id: '1',
-      subjectName: 'Maths',
-      completedTasks: 8,
-      totalTasks: 10,
-      studyMinutes: 320,
-      themeColor: Color(0xFF3B82F6),
-    ),
-    const SubjectProgressModel(
-      id: '2',
-      subjectName: 'Physics',
-      completedTasks: 6,
-      totalTasks: 8,
-      studyMinutes: 240,
-      themeColor: Color(0xFFA855F7),
-    ),
-    const SubjectProgressModel(
-      id: '3',
-      subjectName: 'Chemistry',
-      completedTasks: 5,
-      totalTasks: 7,
-      studyMinutes: 210,
-      themeColor: Color(0xFFF59E0B),
-    ),
-    const SubjectProgressModel(
-      id: '4',
-      subjectName: 'English',
-      completedTasks: 4,
-      totalTasks: 5,
-      studyMinutes: 150,
-      themeColor: Color(0xFF10B981),
-    ),
+  final FocusLocalDataSource? focusLocalDataSource;
+  final HomeRemoteDataSource? homeRemoteDataSource;
+  final PlannerRemoteDataSource? plannerRemoteDataSource;
+
+  ProgressLocalDataSourceImpl({
+    this.focusLocalDataSource,
+    this.homeRemoteDataSource,
+    this.plannerRemoteDataSource,
+  });
+
+  static const List<Map<String, dynamic>> _coreSubjects = [
+    {'name': 'Maths', 'color': Color(0xFF3B82F6), 'symbol': 'Σ'},
+    {'name': 'Physics', 'color': Color(0xFFA855F7), 'symbol': '⚛'},
+    {'name': 'Chemistry', 'color': Color(0xFFF59E0B), 'symbol': '🧪'},
+    {'name': 'English', 'color': Color(0xFF10B981), 'symbol': '📖'},
   ];
 
   @override
-  Future<ProgressSummaryModel> getSummary(ProgressPeriod period, {DateTime? customDate}) async {
-    int totalTasks = 0;
-    int completedTasks = 0;
-    int totalMinutes = 0;
+  Future<ProgressSummaryModel> getSummary(
+    ProgressPeriod period, {
+    DateTime? customDate,
+  }) async {
+    final focusSessions = await _getFocusSessions();
+    final tasks = await _getTasks();
+    final plannerSessions = await _getPlannerSessions();
 
-    for (var s in _mockSubjects) {
-      totalTasks += s.totalTasks;
-      completedTasks += s.completedTasks;
-      totalMinutes += s.studyMinutes;
-    }
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
 
-    double multiplier = 1.0;
-    if (customDate != null) {
-      // Deterministic variation based on selected date's day of month
-      multiplier = 0.25 + ((customDate.day % 5) * 0.15);
-    } else {
-      if (period == ProgressPeriod.thisMonth) multiplier = 3.2;
-      if (period == ProgressPeriod.allTime) multiplier = 8.5;
-    }
+    // 1. Filter focus sessions according to period or customDate
+    final filteredSessions = focusSessions.where((s) {
+      if (s.mode != FocusMode.focus || !s.isCompleted) return false;
+      final sessionDate = DateTime(s.startTime.year, s.startTime.month, s.startTime.day);
 
-    final adjustedTasks = (totalTasks * multiplier).round().clamp(1, 999);
-    final adjustedCompleted = (completedTasks * multiplier).round().clamp(0, adjustedTasks);
-    final adjustedMinutes = (totalMinutes * multiplier).round().clamp(0, 99999);
+      if (customDate != null) {
+        final targetDate = DateTime(customDate.year, customDate.month, customDate.day);
+        return sessionDate == targetDate;
+      }
 
-    double completionPercentage = adjustedTasks > 0
-        ? ((adjustedCompleted / adjustedTasks) * 100).clamp(0.0, 100.0)
+      switch (period) {
+        case ProgressPeriod.thisWeek:
+          final monday = today.subtract(Duration(days: now.weekday - 1));
+          return !sessionDate.isBefore(monday);
+        case ProgressPeriod.thisMonth:
+          final startOfMonth = DateTime(now.year, now.month, 1);
+          return !sessionDate.isBefore(startOfMonth);
+        case ProgressPeriod.allTime:
+          return true;
+      }
+    }).toList();
+
+    // Calculate total study minutes from real sessions
+    final totalStudyMinutes = filteredSessions.fold<int>(
+      0,
+      (int sum, FocusSession s) => sum + s.duration.inMinutes,
+    );
+
+    // 2. Real task counts
+    final totalTasks = tasks.length + plannerSessions.length;
+    final completedTasks = tasks.where((t) => t.isCompleted).length +
+        plannerSessions.where((s) => s.isCompleted).length;
+
+    final completionPercentage = totalTasks > 0
+        ? ((completedTasks / totalTasks) * 100).clamp(0.0, 100.0)
         : 0.0;
 
-    // Weekly Target e.g., 20 hours (1200 mins)
-    const int weeklyTargetMinutes = 1200;
-    double weeklyGoalPct =
-        ((adjustedMinutes / weeklyTargetMinutes) * 100).clamp(0.0, 100.0);
+    // 3. Real daily average calculation
+    int daysCount;
+    if (customDate != null) {
+      daysCount = 1;
+    } else {
+      switch (period) {
+        case ProgressPeriod.thisWeek:
+          daysCount = now.weekday; // Elapsed days in the current week
+          break;
+        case ProgressPeriod.thisMonth:
+          daysCount = now.day; // Elapsed days in the current month
+          break;
+        case ProgressPeriod.allTime:
+          if (focusSessions.isNotEmpty) {
+            final firstDate = focusSessions
+                .map((s) => s.startTime)
+                .reduce((a, b) => a.isBefore(b) ? a : b);
+            daysCount = today.difference(DateTime(firstDate.year, firstDate.month, firstDate.day)).inDays + 1;
+          } else {
+            daysCount = 1;
+          }
+          break;
+      }
+    }
+    if (daysCount < 1) daysCount = 1;
 
-    int avgDailyMins = (adjustedMinutes / (customDate != null ? 1 : 7)).round();
-    int avgHours = avgDailyMins ~/ 60;
-    int avgMins = avgDailyMins % 60;
-    String dailyAvgStr = avgHours > 0 ? '${avgHours}h ${avgMins}m' : '${avgMins}m';
+    final avgDailyMins = (totalStudyMinutes / daysCount).round();
+    final avgHours = avgDailyMins ~/ 60;
+    final avgMins = avgDailyMins % 60;
+    final dailyAvgStr = avgHours > 0 ? '${avgHours}h ${avgMins}m' : '${avgMins}m';
+
+    // 4. Weekly Goal %
+    final weeklyGoalPercentage = await getWeeklyGoalPercentage();
 
     return ProgressSummaryModel(
-      totalStudyMinutes: adjustedMinutes,
-      totalTasksCount: adjustedTasks,
-      completedTasksCount: adjustedCompleted,
+      totalStudyMinutes: totalStudyMinutes,
+      totalTasksCount: totalTasks,
+      completedTasksCount: completedTasks,
       completionPercentage: double.parse(completionPercentage.toStringAsFixed(1)),
-      weeklyGoalPercentage: double.parse(weeklyGoalPct.toStringAsFixed(1)),
+      weeklyGoalPercentage: double.parse(weeklyGoalPercentage.toStringAsFixed(1)),
       dailyAverageFormatted: dailyAvgStr,
     );
   }
 
   @override
   Future<List<SubjectProgressModel>> getSubjectProgress(
-      ProgressPeriod period, {DateTime? customDate}) async {
-    if (customDate == null) return List.from(_mockSubjects);
+    ProgressPeriod period, {
+    DateTime? customDate,
+  }) async {
+    final tasks = await _getTasks();
+    final plannerSessions = await _getPlannerSessions();
+    final focusSessions = await _getFocusSessions();
 
-    final factor = 0.5 + ((customDate.day % 4) * 0.2);
-    return _mockSubjects.map((s) {
-      final total = (s.totalTasks * factor).round().clamp(1, 20);
-      final completed = (s.completedTasks * factor).round().clamp(0, total);
-      final mins = (s.studyMinutes * factor).round();
+    // Build subject map based on core subjects
+    final Map<String, _SubjectDataAccumulator> map = {};
+    for (var s in _coreSubjects) {
+      map[s['name'] as String] = _SubjectDataAccumulator(
+        id: s['name'] as String,
+        name: s['name'] as String,
+        color: s['color'] as Color,
+      );
+    }
+
+    // Process tasks
+    for (var task in tasks) {
+      final name = _mapTaskToSubject(task);
+      final acc = map.putIfAbsent(
+        name,
+        () => _SubjectDataAccumulator(
+          id: name,
+          name: name,
+          color: task.iconBackgroundColor,
+        ),
+      );
+      acc.totalTasks++;
+      if (task.isCompleted) {
+        acc.completedTasks++;
+      }
+    }
+
+    // Process planner sessions
+    for (var session in plannerSessions) {
+      final name = _mapSessionToSubject(session);
+      if (name == 'Break') continue;
+      final acc = map.putIfAbsent(
+        name,
+        () => _SubjectDataAccumulator(
+          id: name,
+          name: name,
+          color: session.customColor ?? const Color(0xFF2563EB),
+        ),
+      );
+      acc.totalTasks++;
+      if (session.isCompleted) {
+        acc.completedTasks++;
+      }
+      acc.studyMinutes += _parseDurationString(session.duration);
+    }
+
+    // Distribute focus session minutes proportionally to subjects with active study
+    final totalFocusMinutes = focusSessions
+        .where((s) => s.mode == FocusMode.focus && s.isCompleted)
+        .fold<int>(0, (int sum, FocusSession s) => sum + s.duration.inMinutes);
+
+    if (totalFocusMinutes > 0) {
+      final activeSubjects = map.values.where((s) => s.totalTasks > 0).toList();
+      if (activeSubjects.isNotEmpty) {
+        final share = totalFocusMinutes ~/ activeSubjects.length;
+        for (var sub in activeSubjects) {
+          sub.studyMinutes += share;
+        }
+      }
+    }
+
+    return map.values.map((item) {
       return SubjectProgressModel(
-        id: s.id,
-        subjectName: s.subjectName,
-        completedTasks: completed,
-        totalTasks: total,
-        studyMinutes: mins,
-        themeColor: s.themeColor,
+        id: item.id,
+        subjectName: item.name,
+        completedTasks: item.completedTasks,
+        totalTasks: item.totalTasks,
+        studyMinutes: item.studyMinutes,
+        themeColor: item.color,
       );
     }).toList();
   }
 
   @override
   Future<StudyStreakModel> getStreak() async {
-    final now = DateTime.now();
-    // Timezone-aware date normalization (stripping hours/mins)
-    final todayNormalized = DateTime(now.year, now.month, now.day);
+    final focusSessions = await _getFocusSessions();
+    final tasks = await _getTasks();
+    final plannerSessions = await _getPlannerSessions();
 
-    final qualifyingDates = List.generate(7, (i) {
-      return todayNormalized.subtract(Duration(days: i));
-    });
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    final Set<String> activityDateKeys = {};
+
+    for (var s in focusSessions) {
+      if (s.mode == FocusMode.focus && s.isCompleted) {
+        activityDateKeys.add(_dateKey(s.startTime));
+      }
+    }
+    for (var t in tasks) {
+      if (t.isCompleted) {
+        activityDateKeys.add(_dateKey(today));
+      }
+    }
+    for (var s in plannerSessions) {
+      if (s.isCompleted) {
+        activityDateKeys.add(_dateKey(s.date));
+      }
+    }
+
+    final qualifyingDates = <DateTime>[];
+    DateTime checkDate = today;
+
+    if (!activityDateKeys.contains(_dateKey(checkDate))) {
+      checkDate = checkDate.subtract(const Duration(days: 1));
+    }
+
+    while (activityDateKeys.contains(_dateKey(checkDate))) {
+      qualifyingDates.add(checkDate);
+      checkDate = checkDate.subtract(const Duration(days: 1));
+    }
+
+    final currentStreak = qualifyingDates.length;
+
+    // Read stored longest streak
+    final prefs = await SharedPreferences.getInstance();
+    int longest = prefs.getInt('pref_longest_streak') ?? currentStreak;
+    if (currentStreak > longest) {
+      longest = currentStreak;
+      await prefs.setInt('pref_longest_streak', longest);
+    }
 
     return StudyStreakModel(
-      currentStreakDays: 7,
-      longestStreakDays: 14,
+      currentStreakDays: currentStreak,
+      longestStreakDays: longest,
       qualifyingDates: qualifyingDates,
     );
   }
 
   @override
   Future<double> getWeeklyGoalPercentage() async {
-    return 85.0; // 85% completed of weekly goal
+    final prefs = await SharedPreferences.getInstance();
+    final weeklyGoalHours = prefs.getInt('pref_weekly_goal_hours') ?? 15;
+    final targetMinutes = weeklyGoalHours * 60;
+    if (targetMinutes <= 0) return 0.0;
+
+    final focusSessions = await _getFocusSessions();
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final monday = today.subtract(Duration(days: now.weekday - 1));
+
+    final weeklyMinutes = focusSessions.where((s) {
+      if (s.mode != FocusMode.focus || !s.isCompleted) return false;
+      final sessionDate = DateTime(s.startTime.year, s.startTime.month, s.startTime.day);
+      return !sessionDate.isBefore(monday);
+    }).fold<int>(0, (int sum, FocusSession s) => sum + s.duration.inMinutes);
+
+    return ((weeklyMinutes / targetMinutes) * 100).clamp(0.0, 100.0);
   }
+
+  @override
+  Future<List<Map<String, dynamic>>> getProgressHistory({
+    DateTime? weekStartDate,
+  }) async {
+    final focusSessions = await _getFocusSessions();
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    final monday = weekStartDate != null
+        ? DateTime(weekStartDate.year, weekStartDate.month, weekStartDate.day)
+        : today.subtract(Duration(days: now.weekday - 1));
+
+    final dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    final List<Map<String, dynamic>> history = [];
+
+    for (int i = 0; i < 7; i++) {
+      final targetDate = monday.add(Duration(days: i));
+      final dateKey = _dateKey(targetDate);
+
+      final dayMinutes = focusSessions.where((s) {
+        if (s.mode != FocusMode.focus || !s.isCompleted) return false;
+        return _dateKey(s.startTime) == dateKey;
+      }).fold<int>(0, (int sum, FocusSession s) => sum + s.duration.inMinutes);
+
+      history.add({
+        'day': dayLabels[i],
+        'date': '${targetDate.day}/${targetDate.month}',
+        'minutes': dayMinutes,
+        'isToday': _dateKey(today) == dateKey,
+      });
+    }
+
+    return history;
+  }
+
+  // --- Helper Methods ---
+
+  Future<List<FocusSession>> _getFocusSessions() async {
+    if (focusLocalDataSource == null) return [];
+    try {
+      return await focusLocalDataSource!.getHistory();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<List<TaskModel>> _getTasks() async {
+    if (homeRemoteDataSource == null) return [];
+    try {
+      return await homeRemoteDataSource!.fetchTodayTasks();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<List<StudySession>> _getPlannerSessions() async {
+    if (plannerRemoteDataSource == null) return [];
+    try {
+      return await plannerRemoteDataSource!.getStudySessions(DateTime.now());
+    } catch (_) {
+      return [];
+    }
+  }
+
+  String _dateKey(DateTime dt) => '${dt.year}-${dt.month}-${dt.day}';
+
+  String _mapTaskToSubject(TaskModel task) {
+    final colorVal = task.iconBackgroundColor.toARGB32();
+    if (colorVal == const Color(0xFF3B82F6).toARGB32() || task.iconSymbol == 'Σ') {
+      return 'Maths';
+    }
+    if (colorVal == const Color(0xFFA855F7).toARGB32() || task.iconSymbol == '⚛') {
+      return 'Physics';
+    }
+    if (colorVal == const Color(0xFF10B981).toARGB32() || task.iconSymbol == '📖') {
+      return 'English';
+    }
+    if (colorVal == const Color(0xFFF59E0B).toARGB32() || task.iconSymbol == '🧪') {
+      return 'Chemistry';
+    }
+    final lower = task.title.toLowerCase();
+    if (lower.contains('math')) return 'Maths';
+    if (lower.contains('physic')) return 'Physics';
+    if (lower.contains('chem')) return 'Chemistry';
+    if (lower.contains('eng')) return 'English';
+    return 'General';
+  }
+
+  String _mapSessionToSubject(StudySession session) {
+    switch (session.subjectType) {
+      case SubjectType.maths:
+        return 'Maths';
+      case SubjectType.physics:
+        return 'Physics';
+      case SubjectType.chemistry:
+        return 'Chemistry';
+      case SubjectType.english:
+        return 'English';
+      case SubjectType.breakTime:
+        return 'Break';
+      case SubjectType.revision:
+      case SubjectType.custom:
+        return session.title.isNotEmpty ? session.title : 'General';
+    }
+  }
+
+  int _parseDurationString(String duration) {
+    final d = duration.trim().toLowerCase();
+    if (d.contains('h')) {
+      final parts = d.split('h');
+      final hours = int.tryParse(parts[0].trim()) ?? 0;
+      final mins = parts.length > 1 && parts[1].contains('m')
+          ? int.tryParse(parts[1].replaceAll('m', '').trim()) ?? 0
+          : 0;
+      return (hours * 60) + mins;
+    } else if (d.contains('m')) {
+      return int.tryParse(d.replaceAll('m', '').trim()) ?? 0;
+    }
+    return 0;
+  }
+}
+
+class _SubjectDataAccumulator {
+  final String id;
+  final String name;
+  final Color color;
+  int completedTasks = 0;
+  int totalTasks = 0;
+  int studyMinutes = 0;
+
+  _SubjectDataAccumulator({
+    required this.id,
+    required this.name,
+    required this.color,
+  });
 }

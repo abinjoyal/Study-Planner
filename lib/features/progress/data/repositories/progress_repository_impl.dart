@@ -35,15 +35,7 @@ class ProgressRepositoryImpl implements ProgressRepository {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getProgressHistory() async {
-    return [
-      {'day': 'Mon', 'minutes': 180},
-      {'day': 'Tue', 'minutes': 240},
-      {'day': 'Wed', 'minutes': 210},
-      {'day': 'Thu', 'minutes': 300},
-      {'day': 'Fri', 'minutes': 150},
-      {'day': 'Sat', 'minutes': 270},
-      {'day': 'Sun', 'minutes': 220},
-    ];
+  Future<List<Map<String, dynamic>>> getProgressHistory({DateTime? weekStartDate}) async {
+    return await localDataSource.getProgressHistory(weekStartDate: weekStartDate);
   }
 }

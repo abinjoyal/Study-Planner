@@ -5,7 +5,7 @@ class GetProgressHistory {
 
   GetProgressHistory(this.repository);
 
-  Future<List<Map<String, dynamic>>> call() {
-    return repository.getProgressHistory();
+  Future<List<Map<String, dynamic>>> call({DateTime? weekStartDate}) {
+    return repository.getProgressHistory(weekStartDate: weekStartDate);
   }
 }

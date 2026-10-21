@@ -9,5 +9,5 @@ abstract class ProgressRepository {
   Future<List<SubjectProgress>> getSubjectProgress(ProgressPeriod period, {DateTime? customDate});
   Future<StudyStreak> getStudyStreak();
   Future<double> getWeeklyGoalPercentage();
-  Future<List<Map<String, dynamic>>> getProgressHistory();
+  Future<List<Map<String, dynamic>>> getProgressHistory({DateTime? weekStartDate});
 }

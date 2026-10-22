@@ -19,10 +19,22 @@ class AddStudySessionPage extends ConsumerStatefulWidget {
 class _AddStudySessionPageState extends ConsumerState<AddStudySessionPage> {
   final _formKey = GlobalKey<FormState>();
 
+  static const List<Color> _availableColors = [
+    Color(0xFF2563EB), // Blue
+    Color(0xFF9333EA), // Purple
+    Color(0xFFFF6E1F), // Orange
+    Color(0xFF10B981), // Emerald
+    Color(0xFFD97706), // Amber
+    Color(0xFFE11D48), // Rose
+    Color(0xFF0D9488), // Teal
+    Color(0xFF4F46E5), // Indigo
+  ];
+
   late TextEditingController _titleController;
   late TextEditingController _subtitleController;
   late TextEditingController _timeLabelController;
   late TextEditingController _durationController;
+  late Color _selectedColor;
 
   @override
   void initState() {
@@ -34,6 +46,7 @@ class _AddStudySessionPageState extends ConsumerState<AddStudySessionPage> {
         TextEditingController(text: session?.timeLabel ?? '08:00');
     _durationController =
         TextEditingController(text: session?.duration ?? '1h');
+    _selectedColor = session?.customColor ?? _availableColors[0];
   }
 
   @override
@@ -71,6 +84,7 @@ class _AddStudySessionPageState extends ConsumerState<AddStudySessionPage> {
         duration: _durationController.text.trim(),
         subjectType: detectedSubject,
         date: ref.read(plannerNotifierProvider).selectedDate,
+        customColor: _selectedColor,
       );
 
       final notifier = ref.read(plannerNotifierProvider.notifier);
@@ -158,6 +172,66 @@ class _AddStudySessionPageState extends ConsumerState<AddStudySessionPage> {
                 ),
               ),
               const SizedBox(height: 18),
+
+              // Color Tag Selection
+              const Text(
+                'Color Tag',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1B1C4B),
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 44,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _availableColors.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 12),
+                  itemBuilder: (context, index) {
+                    final color = _availableColors[index];
+                    final isSelected = color == _selectedColor;
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedColor = color;
+                        });
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        width: 42,
+                        height: 42,
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: isSelected ? Colors.white : Colors.transparent,
+                            width: 3,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: color.withValues(
+                                alpha: isSelected ? 0.45 : 0.2,
+                              ),
+                              blurRadius: isSelected ? 8 : 4,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: isSelected
+                            ? const Icon(
+                                Icons.check_rounded,
+                                color: Colors.white,
+                                size: 22,
+                              )
+                            : null,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
 
               // Time & Duration Row
               Row(

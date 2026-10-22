@@ -31,22 +31,6 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   final _descriptionController = TextEditingController();
   final _timeController = TextEditingController();
 
-  final List<Map<String, dynamic>> _subjectPresets = [
-    {'name': 'Maths', 'symbol': 'Σ', 'color': Color(0xFF3B82F6)},
-    {'name': 'Physics', 'symbol': '⚛', 'color': Color(0xFFA855F7)},
-    {'name': 'English', 'symbol': '📖', 'color': Color(0xFF10B981)},
-    {'name': 'Chemistry', 'symbol': '🧪', 'color': Color(0xFFF59E0B)},
-    {'name': 'General', 'symbol': '📝', 'color': Color(0xFFEC4899)},
-  ];
-
-  late Map<String, dynamic> _selectedPreset;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedPreset = _subjectPresets[0];
-  }
-
   @override
   void dispose() {
     _titleController.dispose();
@@ -57,12 +41,47 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
+      final titleText = _titleController.text.trim();
+      final lowerTitle = titleText.toLowerCase();
+
+      String symbol = '📝';
+      Color color = const Color(0xFFFF6E1F);
+
+      if (lowerTitle.contains('math')) {
+        symbol = 'Σ';
+        color = const Color(0xFF3B82F6);
+      } else if (lowerTitle.contains('physic')) {
+        symbol = '⚛';
+        color = const Color(0xFFA855F7);
+      } else if (lowerTitle.contains('chem')) {
+        symbol = '🧪';
+        color = const Color(0xFFF59E0B);
+      } else if (lowerTitle.contains('eng')) {
+        symbol = '📖';
+        color = const Color(0xFF10B981);
+      } else {
+        const palette = [
+          Color(0xFF2563EB),
+          Color(0xFF9333EA),
+          Color(0xFFFF6E1F),
+          Color(0xFF10B981),
+          Color(0xFFD97706),
+          Color(0xFFE11D48),
+          Color(0xFF0D9488),
+          Color(0xFF4F46E5),
+        ];
+        final index = titleText.isNotEmpty
+            ? (titleText.codeUnits.reduce((a, b) => a + b) % palette.length)
+            : 0;
+        color = palette[index];
+      }
+
       final task = StudyTask(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
-        title: _titleController.text.trim(),
+        title: titleText,
         description: _descriptionController.text.trim(),
-        iconSymbol: _selectedPreset['symbol'] as String,
-        iconBackgroundColor: _selectedPreset['color'] as Color,
+        iconSymbol: symbol,
+        iconBackgroundColor: color,
         isCompleted: false,
         estimatedTime: _timeController.text.trim().isNotEmpty
             ? _timeController.text.trim()
@@ -126,81 +145,6 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ],
-              ),
-              const SizedBox(height: 16),
-
-              // Subject / Category Selector
-              const Text(
-                'Subject / Category',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF475569),
-                ),
-              ),
-              const SizedBox(height: 8),
-              SizedBox(
-                height: 44,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _subjectPresets.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: 8),
-                  itemBuilder: (context, index) {
-                    final preset = _subjectPresets[index];
-                    final isSelected =
-                        _selectedPreset['name'] == preset['name'];
-                    return InkWell(
-                      onTap: () {
-                        setState(() {
-                          _selectedPreset = preset;
-                        });
-                      },
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? (preset['color'] as Color).withValues(alpha: 0.15)
-                              : const Color(0xFFF1F5F9),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: isSelected
-                                ? (preset['color'] as Color)
-                                : Colors.transparent,
-                            width: 1.5,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              preset['symbol'] as String,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: preset['color'] as Color,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              preset['name'] as String,
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: isSelected
-                                    ? FontWeight.w700
-                                    : FontWeight.w500,
-                                color: isSelected
-                                    ? (preset['color'] as Color)
-                                    : const Color(0xFF475569),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
               ),
               const SizedBox(height: 16),
 

@@ -30,13 +30,6 @@ class ProgressLocalDataSourceImpl implements ProgressLocalDataSource {
     this.plannerRemoteDataSource,
   });
 
-  static const List<Map<String, dynamic>> _coreSubjects = [
-    {'name': 'Maths', 'color': Color(0xFF3B82F6), 'symbol': 'Σ'},
-    {'name': 'Physics', 'color': Color(0xFFA855F7), 'symbol': '⚛'},
-    {'name': 'Chemistry', 'color': Color(0xFFF59E0B), 'symbol': '🧪'},
-    {'name': 'English', 'color': Color(0xFF10B981), 'symbol': '📖'},
-  ];
-
   @override
   Future<ProgressSummaryModel> getSummary(
     ProgressPeriod period, {
@@ -139,14 +132,37 @@ class ProgressLocalDataSourceImpl implements ProgressLocalDataSource {
     final plannerSessions = await _getPlannerSessions();
     final focusSessions = await _getFocusSessions();
 
-    // Build subject map based on core subjects
+    // Build subject map dynamically based on user's active tasks and sessions
     final Map<String, _SubjectDataAccumulator> map = {};
-    for (var s in _coreSubjects) {
-      map[s['name'] as String] = _SubjectDataAccumulator(
-        id: s['name'] as String,
-        name: s['name'] as String,
-        color: s['color'] as Color,
+
+    const palette = [
+      Color(0xFF3B82F6),
+      Color(0xFFA855F7),
+      Color(0xFFF59E0B),
+      Color(0xFF10B981),
+      Color(0xFFEC4899),
+      Color(0xFF06B6D4),
+      Color(0xFF8B5CF6),
+      Color(0xFFF97316),
+    ];
+
+    // Process planner sessions
+    for (var session in plannerSessions) {
+      final name = _mapSessionToSubject(session);
+      if (name == 'Break') continue;
+      final acc = map.putIfAbsent(
+        name,
+        () => _SubjectDataAccumulator(
+          id: name,
+          name: name,
+          color: session.customColor ?? palette[map.length % palette.length],
+        ),
       );
+      acc.totalTasks++;
+      if (session.isCompleted) {
+        acc.completedTasks++;
+      }
+      acc.studyMinutes += _parseDurationString(session.duration);
     }
 
     // Process tasks
@@ -164,25 +180,6 @@ class ProgressLocalDataSourceImpl implements ProgressLocalDataSource {
       if (task.isCompleted) {
         acc.completedTasks++;
       }
-    }
-
-    // Process planner sessions
-    for (var session in plannerSessions) {
-      final name = _mapSessionToSubject(session);
-      if (name == 'Break') continue;
-      final acc = map.putIfAbsent(
-        name,
-        () => _SubjectDataAccumulator(
-          id: name,
-          name: name,
-          color: session.customColor ?? const Color(0xFF2563EB),
-        ),
-      );
-      acc.totalTasks++;
-      if (session.isCompleted) {
-        acc.completedTasks++;
-      }
-      acc.studyMinutes += _parseDurationString(session.duration);
     }
 
     // Distribute focus session minutes proportionally to subjects with active study
@@ -378,6 +375,12 @@ class ProgressLocalDataSourceImpl implements ProgressLocalDataSource {
   }
 
   String _mapSessionToSubject(StudySession session) {
+    if (session.subjectType == SubjectType.breakTime) {
+      return 'Break';
+    }
+    if (session.title.trim().isNotEmpty) {
+      return session.title.trim();
+    }
     switch (session.subjectType) {
       case SubjectType.maths:
         return 'Maths';
@@ -387,11 +390,11 @@ class ProgressLocalDataSourceImpl implements ProgressLocalDataSource {
         return 'Chemistry';
       case SubjectType.english:
         return 'English';
-      case SubjectType.breakTime:
-        return 'Break';
       case SubjectType.revision:
+        return 'Revision';
       case SubjectType.custom:
-        return session.title.isNotEmpty ? session.title : 'General';
+      default:
+        return 'General';
     }
   }
 

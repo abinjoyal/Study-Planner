@@ -16,17 +16,42 @@ class StudySessionCard extends StatelessWidget {
     this.onToggleComplete,
   });
 
+  static const List<Color> _palette = [
+    Color(0xFF2563EB), // Blue
+    Color(0xFF9333EA), // Purple
+    Color(0xFFFF6E1F), // Orange
+    Color(0xFF10B981), // Emerald
+    Color(0xFFD97706), // Amber
+    Color(0xFFE11D48), // Rose
+    Color(0xFF0D9488), // Teal
+    Color(0xFF4F46E5), // Indigo
+  ];
+
+  Color _resolveColor(StudySession session) {
+    if (session.customColor != null) {
+      return session.customColor!;
+    }
+    if (session.subjectType != SubjectType.custom) {
+      return SubjectIconHelper.getStyle(session.subjectType).leftAccentColor;
+    }
+    final index = session.title.isNotEmpty
+        ? (session.title.codeUnits.reduce((a, b) => a + b) % _palette.length)
+        : 0;
+    return _palette[index];
+  }
+
   @override
   Widget build(BuildContext context) {
-    final style = SubjectIconHelper.getStyle(session.subjectType);
+    final accentColor = _resolveColor(session);
+    final cardBgColor = accentColor.withValues(alpha: 0.05);
 
     return Container(
       decoration: BoxDecoration(
-        color: style.cardBgColor,
+        color: cardBgColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: style.leftAccentColor.withValues(alpha: 0.15),
-          width: 1,
+          color: accentColor.withValues(alpha: 0.18),
+          width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
@@ -44,15 +69,16 @@ class StudySessionCard extends StatelessWidget {
               // Left Accent Strip
               Container(
                 width: 5,
-                color: style.leftAccentColor,
+                color: accentColor,
               ),
               const SizedBox(width: 12),
 
               // Subject Icon
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                child: SubjectIcon(
-                  subjectType: session.subjectType,
+                child: Icon(
+                  SubjectIconHelper.getStyle(session.subjectType).icon,
+                  color: accentColor,
                   size: 26,
                 ),
               ),

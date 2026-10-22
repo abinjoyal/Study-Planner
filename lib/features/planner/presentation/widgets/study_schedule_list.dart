@@ -18,34 +18,37 @@ class StudyScheduleList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (sessions.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                color: Color(0xFFF1F5F9),
-                shape: BoxShape.circle,
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 48.0),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                  color: Color(0xFFF1F5F9),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.calendar_today_outlined,
+                  size: 32,
+                  color: Color(0xFF94A3B8),
+                ),
               ),
-              child: const Icon(
-                Icons.calendar_today_outlined,
-                size: 32,
-                color: Color(0xFF94A3B8),
+              const SizedBox(height: 14),
+              const Text(
+                'No study sessions scheduled for this day',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF94A3B8),
+                ),
               ),
-            ),
-            const SizedBox(height: 14),
-            const Text(
-              'No study sessions scheduled for this day',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF94A3B8),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     }

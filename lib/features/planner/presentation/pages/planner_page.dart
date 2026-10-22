@@ -35,81 +35,68 @@ class PlannerPage extends ConsumerWidget {
             : RefreshIndicator(
                 onRefresh: () => notifier.init(),
                 color: const Color(0xFFFF6E1F),
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0,
-                        vertical: 12.0,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 12.0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Header Title, Calendar & Add Session Buttons
+                      PlannerHeader(
+                        showAddButton: canAddSession,
+                        onCalendarTap: () async {
+                          final picked = await showDatePicker(
+                            context: context,
+                            initialDate: state.selectedDate,
+                            firstDate: DateTime(2020),
+                            lastDate: DateTime(2030),
+                          );
+                          if (picked != null) {
+                            notifier.selectDate(picked);
+                          }
+                        },
+                        onAddTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  const AddStudySessionPage(),
+                            ),
+                          );
+                        },
                       ),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: constraints.maxHeight - 24.0,
-                        ),
-                        child: IntrinsicHeight(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Header Title, Calendar & Add Session Buttons
-                              PlannerHeader(
-                                showAddButton: canAddSession,
-                                onCalendarTap: () async {
-                                  final picked = await showDatePicker(
-                                    context: context,
-                                    initialDate: state.selectedDate,
-                                    firstDate: DateTime(2020),
-                                    lastDate: DateTime(2030),
-                                  );
-                                  if (picked != null) {
-                                    notifier.selectDate(picked);
-                                  }
-                                },
-                                onAddTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (_) =>
-                                          const AddStudySessionPage(),
-                                    ),
-                                  );
-                                },
-                              ),
-                              const SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
-                              // Week Calendar Strip
-                              WeekCalendar(
-                                days: state.days,
-                                selectedDate: state.selectedDate,
-                                onDateSelected: (date) {
-                                  notifier.selectDate(date);
-                                },
-                              ),
-                              const SizedBox(height: 20),
-
-                              // Study Schedule Items List
-                              Expanded(
-                                child: StudyScheduleList(
-                                  sessions: state.sessions,
-                                  onEditSession: (session) {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (_) => AddStudySessionPage(
-                                            sessionToEdit: session),
-                                      ),
-                                    );
-                                  },
-                                  onDeleteSession: (id) {
-                                    notifier.removeSession(id);
-                                  },
-                                ),
-                              ),
-                              const SizedBox(height: 24),
-                            ],
-                          ),
-                        ),
+                      // Week Calendar Strip
+                      WeekCalendar(
+                        days: state.days,
+                        selectedDate: state.selectedDate,
+                        onDateSelected: (date) {
+                          notifier.selectDate(date);
+                        },
                       ),
-                    );
-                  },
+                      const SizedBox(height: 20),
+
+                      // Study Schedule Items List
+                      StudyScheduleList(
+                        sessions: state.sessions,
+                        onEditSession: (session) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => AddStudySessionPage(
+                                  sessionToEdit: session),
+                            ),
+                          );
+                        },
+                        onDeleteSession: (id) {
+                          notifier.removeSession(id);
+                        },
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+                  ),
                 ),
               ),
       ),

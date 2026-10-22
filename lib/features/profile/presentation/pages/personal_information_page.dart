@@ -5,6 +5,7 @@ import '../../../../core/router/nav_bar.dart';
 import '../providers/edit_profile_provider.dart';
 import '../providers/profile_provider.dart';
 import '../widgets/profile_avatar.dart';
+import '../../domain/entities/user_profile.dart';
 
 class PersonalInformationPage extends ConsumerStatefulWidget {
   final bool isFirstTime;
@@ -131,7 +132,7 @@ class _PersonalInformationPageState
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Information updated successfully!'),
-            backgroundColor: const Color(0xFF16A34A),
+            backgroundColor: Color(0xFF16A34A),
           ),
         );
 
@@ -222,7 +223,8 @@ class _PersonalInformationPageState
     );
   }
 
-  Widget _buildViewMode(profile) {
+  Widget _buildViewMode(UserProfile? profile) {
+    final birthday = profile?.birthday;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -277,8 +279,8 @@ class _PersonalInformationPageState
           iconColor: const Color(0xFFE11D48),
           iconBg: const Color(0xFFFFE4E6),
           label: 'Birthday',
-          value: profile?.birthday != null
-              ? '${profile!.birthday!.day}/${profile!.birthday!.month}/${profile!.birthday!.year}'
+          value: birthday != null
+              ? '${birthday.day}/${birthday.month}/${birthday.year}'
               : 'May 14, 2003',
         ),
 

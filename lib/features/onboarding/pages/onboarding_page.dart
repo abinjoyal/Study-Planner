@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../core/router/nav_bar.dart';
 import '../../profile/presentation/pages/personal_information_page.dart';
 import '../../splash/widgets/splash_background.dart';
 import '../widgets/onboarding_content.dart';

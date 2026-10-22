@@ -23,7 +23,6 @@ class _AddStudySessionPageState extends ConsumerState<AddStudySessionPage> {
   late TextEditingController _subtitleController;
   late TextEditingController _timeLabelController;
   late TextEditingController _durationController;
-  late SubjectType _selectedSubject;
 
   @override
   void initState() {
@@ -35,7 +34,6 @@ class _AddStudySessionPageState extends ConsumerState<AddStudySessionPage> {
         TextEditingController(text: session?.timeLabel ?? '08:00');
     _durationController =
         TextEditingController(text: session?.duration ?? '1h');
-    _selectedSubject = session?.subjectType ?? SubjectType.maths;
   }
 
   @override
@@ -50,15 +48,28 @@ class _AddStudySessionPageState extends ConsumerState<AddStudySessionPage> {
   void _saveSession() {
     if (_formKey.currentState?.validate() ?? false) {
       final isEditing = widget.sessionToEdit != null;
+      final titleText = _titleController.text.trim();
+
+      // Automatically infer subject type from title, or keep existing / custom
+      SubjectType detectedSubject =
+          widget.sessionToEdit?.subjectType ?? SubjectType.custom;
+      final lowerTitle = titleText.toLowerCase();
+      for (final type in SubjectType.values) {
+        if (lowerTitle.contains(type.name.toLowerCase())) {
+          detectedSubject = type;
+          break;
+        }
+      }
+
       final session = StudySession(
         id: isEditing
             ? widget.sessionToEdit!.id
             : DateTime.now().millisecondsSinceEpoch.toString(),
-        title: _titleController.text.trim(),
+        title: titleText,
         subtitle: _subtitleController.text.trim(),
         timeLabel: _timeLabelController.text.trim(),
         duration: _durationController.text.trim(),
-        subjectType: _selectedSubject,
+        subjectType: detectedSubject,
         date: ref.read(plannerNotifierProvider).selectedDate,
       );
 
@@ -98,58 +109,9 @@ class _AddStudySessionPageState extends ConsumerState<AddStudySessionPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Subject Dropdown
-              const Text(
-                'Subject Type',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF1B1C4B),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: const Color(0xFFE2E8F0)),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<SubjectType>(
-                    value: _selectedSubject,
-                    isExpanded: true,
-                    items: SubjectType.values.map((type) {
-                      return DropdownMenuItem(
-                        value: type,
-                        child: Text(
-                          type.name.toUpperCase(),
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (val) {
-                      if (val != null) {
-                        setState(() {
-                          _selectedSubject = val;
-                          if (_titleController.text.isEmpty ||
-                              SubjectType.values.any((t) =>
-                                  t.name.toLowerCase() ==
-                                  _titleController.text.toLowerCase())) {
-                            _titleController.text =
-                                val.name[0].toUpperCase() + val.name.substring(1);
-                          }
-                        });
-                      }
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(height: 18),
-
               // Title
               const Text(
-                'Title',
+                'Subject / Title',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -160,7 +122,7 @@ class _AddStudySessionPageState extends ConsumerState<AddStudySessionPage> {
               TextFormField(
                 controller: _titleController,
                 decoration: InputDecoration(
-                  hintText: 'e.g. Maths, Physics',
+                  hintText: 'e.g. Maths, Physics, Chemistry',
                   fillColor: Colors.white,
                   filled: true,
                   border: OutlineInputBorder(
@@ -169,7 +131,7 @@ class _AddStudySessionPageState extends ConsumerState<AddStudySessionPage> {
                   ),
                 ),
                 validator: (val) =>
-                    val == null || val.isEmpty ? 'Title is required' : null,
+                    val == null || val.trim().isEmpty ? 'Title is required' : null,
               ),
               const SizedBox(height: 18),
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/router/nav_bar.dart';
 import '../../onboarding/pages/onboarding_page.dart';
+import '../../profile/presentation/pages/personal_information_page.dart';
 import '../widgets/splash_background.dart';
 import '../widgets/splash_logo.dart';
 import '../widgets/splash_title.dart';
@@ -66,6 +67,8 @@ class _SplashPageState extends State<SplashPage>
 
   Future<void> _onLoadingFinished() async {
     final prefs = await SharedPreferences.getInstance();
+    final bool isProfileSetupCompleted =
+        prefs.getBool('isProfileSetupCompleted') ?? false;
     final bool isOnboardingCompleted =
         prefs.getBool('isOnboardingCompleted') ?? false;
 
@@ -74,18 +77,26 @@ class _SplashPageState extends State<SplashPage>
     if (widget.onInitializationComplete != null) {
       widget.onInitializationComplete!();
     } else {
-      if (isOnboardingCompleted) {
+      if (isProfileSetupCompleted) {
         // Subsequent launches: Splash -> Home directly
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => const MainNavBar(),
           ),
         );
-      } else {
-        // First launch: Splash -> Onboarding
+      } else if (!isOnboardingCompleted) {
+        // First launch: Splash -> Onboarding -> Student Information
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => const OnboardingPage(),
+          ),
+        );
+      } else {
+        // Onboarding completed but profile setup pending: Splash -> Student Information
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) =>
+                const PersonalInformationPage(isFirstTime: true),
           ),
         );
       }

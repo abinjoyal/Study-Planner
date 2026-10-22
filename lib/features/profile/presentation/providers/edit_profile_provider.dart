@@ -61,8 +61,23 @@ class EditProfileState {
 class EditProfileNotifier extends StateNotifier<EditProfileState> {
   final Ref ref;
 
-  EditProfileNotifier(this.ref) : super(const EditProfileState()) {
-    initFromCurrentProfile();
+  EditProfileNotifier(this.ref) : super(_buildInitialState(ref));
+
+  static EditProfileState _buildInitialState(Ref ref) {
+    final profile = ref.read(profileNotifierProvider).profile;
+    if (profile != null) {
+      return EditProfileState(
+        name: profile.name,
+        email: profile.email,
+        degree: profile.degree,
+        avatarUrl: profile.avatarUrl.isNotEmpty
+            ? profile.avatarUrl
+            : kPresetAvatars.first,
+        birthday: profile.birthday,
+        phoneNumber: profile.phoneNumber,
+      );
+    }
+    return const EditProfileState();
   }
 
   void initFromCurrentProfile() {
@@ -79,6 +94,20 @@ class EditProfileNotifier extends StateNotifier<EditProfileState> {
         phoneNumber: profile.phoneNumber,
       );
     }
+  }
+
+  void resetForFirstTime() {
+    state = const EditProfileState(
+      name: '',
+      email: '',
+      degree: '',
+      avatarUrl: 'assets/images/avatar_1.png',
+      birthday: null,
+      phoneNumber: '',
+      isSaving: false,
+      errorMessage: null,
+      isSaved: false,
+    );
   }
 
   void setName(String val) => state = state.copyWith(name: val);

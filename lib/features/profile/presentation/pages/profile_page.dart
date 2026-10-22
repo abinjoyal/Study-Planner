@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:studyplanner/features/onboarding/pages/onboarding_page.dart';
 import '../../domain/entities/user_profile.dart';
 import '../providers/profile_provider.dart';
@@ -9,7 +10,7 @@ import '../widgets/profile_info_card.dart';
 import '../widgets/profile_menu_list.dart';
 import '../widgets/profile_section_title.dart';
 import 'appearance_page.dart';
-import 'edit_profile_page.dart';
+import 'personal_information_page.dart';
 
 class ProfilePage extends ConsumerWidget {
   final bool showBottomNav;
@@ -22,6 +23,9 @@ class ProfilePage extends ConsumerWidget {
   Future<void> _handleLogout(BuildContext context, WidgetRef ref) async {
     final notifier = ref.read(profileNotifierProvider.notifier);
     await notifier.signOut();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('isProfileSetupCompleted');
+    await prefs.remove('isOnboardingCompleted');
 
     if (context.mounted) {
       // Clear navigation history and navigate back to initial/onboarding screen
@@ -37,7 +41,7 @@ class ProfilePage extends ConsumerWidget {
   void _openEditProfile(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => const EditProfilePage(),
+        builder: (_) => const PersonalInformationPage(isInitialEdit: true),
       ),
     );
   }

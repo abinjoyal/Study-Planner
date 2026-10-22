@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/router/nav_bar.dart';
+import '../../profile/presentation/pages/personal_information_page.dart';
 import '../../splash/widgets/splash_background.dart';
 import '../widgets/onboarding_content.dart';
 import '../widgets/onboarding_indicator.dart';
@@ -73,7 +74,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
       widget.onOnboardingComplete!();
     } else {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const MainNavBar()),
+        MaterialPageRoute(
+          builder: (context) =>
+              const PersonalInformationPage(isFirstTime: true),
+        ),
       );
     }
   }

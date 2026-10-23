@@ -25,6 +25,12 @@ class AppTheme {
           fontWeight: FontWeight.w600,
         ),
       ),
+      actionIconTheme: ActionIconThemeData(
+        backButtonIconBuilder: (BuildContext context) => const Icon(
+          Icons.arrow_back_ios_new_rounded,
+          size: 20,
+        ),
+      ),
     );
   }
 
@@ -49,6 +55,12 @@ class AppTheme {
           color: AppColors.textDarkPrimary,
           fontSize: 20,
           fontWeight: FontWeight.w600,
+        ),
+      ),
+      actionIconTheme: ActionIconThemeData(
+        backButtonIconBuilder: (BuildContext context) => const Icon(
+          Icons.arrow_back_ios_new_rounded,
+          size: 20,
         ),
       ),
     );

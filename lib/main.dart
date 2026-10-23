@@ -41,6 +41,12 @@ class StudyPlannerApp extends ConsumerWidget {
         ),
         scaffoldBackgroundColor: const Color(0xFFFAF9F6),
         useMaterial3: true,
+        actionIconTheme: ActionIconThemeData(
+          backButtonIconBuilder: (BuildContext context) => const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            size: 20,
+          ),
+        ),
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -50,6 +56,12 @@ class StudyPlannerApp extends ConsumerWidget {
         ),
         scaffoldBackgroundColor: const Color(0xFF0F172A),
         useMaterial3: true,
+        actionIconTheme: ActionIconThemeData(
+          backButtonIconBuilder: (BuildContext context) => const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            size: 20,
+          ),
+        ),
       ),
       home: const SplashPage(),
     );

@@ -105,6 +105,13 @@ class _AddStudySessionPageState extends ConsumerState<AddStudySessionPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FC),
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Color(0xFF1B1C4B),
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: Text(
           isEditing ? 'Edit Study Session' : 'New Study Session',
           style: const TextStyle(

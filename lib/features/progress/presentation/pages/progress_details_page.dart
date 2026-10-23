@@ -64,6 +64,13 @@ class _ProgressDetailsPageState extends ConsumerState<ProgressDetailsPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FE),
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Color(0xFF1B1C4B),
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: Text(
           _activeSubject != null
               ? '${_activeSubject!.subjectName} Details'

@@ -26,7 +26,7 @@ class _OnboardingButtonState extends State<OnboardingButton> {
     final IconData effectiveIcon = widget.icon ??
         (widget.text.toLowerCase().contains('start')
             ? Icons.rocket_launch_rounded
-            : Icons.arrow_forward_rounded);
+            : Icons.arrow_forward_ios_rounded);
 
     return AnimatedScale(
       scale: _isPressed ? 0.96 : 1.0,

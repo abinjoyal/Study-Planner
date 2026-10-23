@@ -43,6 +43,13 @@ class _FocusSettingsPageState extends ConsumerState<FocusSettingsPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FE),
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Color(0xFF1B1C4B),
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: const Text(
           'Timer Settings',
           style: TextStyle(

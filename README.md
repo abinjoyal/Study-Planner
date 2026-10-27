@@ -119,7 +119,6 @@ Analytics & Progress Evaluation
 - [ ] Schedule Generation Engine
 - [ ] Pomodoro / Study Focus Session Timer
 - [ ] Notification Scheduling System
-- [ ] Offline Cache Sync
 
 ---
 

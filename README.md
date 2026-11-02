@@ -50,7 +50,7 @@ lib/
 │   ├── profile/         # User preferences and account settings
 │   ├── progress/        # Performance reports and completion statistics
 │   └── splash/          # App initialization and auth state checks
-└── main.dart            # Application entry point
+└── main.dart            
 ```
 
 ---

@@ -104,7 +104,7 @@ class ProfilePage extends ConsumerWidget {
                       ),
                       const SizedBox(height: 24),
 
-                      // 3. Section Title ("Account")
+                      // 3. Section Title
                       const ProfileSectionTitle(title: 'Account'),
                       const SizedBox(height: 12),
 

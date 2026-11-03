@@ -22,7 +22,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   static const List<OnboardingSlideModel> _slides = [
     OnboardingSlideModel(
       imagePath: 'assets/images/onboarding/onboarding_1.png',
-      titlePrefix: 'Plan Your ',
+      titlePrefix: 'Plan Your',
       titleHighlight: 'Studies',
       description:
           'Organize your subjects and build\na study plan that works for you.',
@@ -31,7 +31,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     ),
     OnboardingSlideModel(
       imagePath: 'assets/images/onboarding/onboarding_2.png',
-      titlePrefix: 'Stay ',
+      titlePrefix: 'Stay',
       titleHighlight: 'Focused',
       description:
           'Break your study goals into\nmanageable sessions and\navoid distractions.',

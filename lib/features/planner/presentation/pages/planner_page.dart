@@ -44,7 +44,8 @@ class PlannerPage extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Header Title, Calendar & Add Session Buttons
+                      
+                      // Header Title, Calendar & Add Session Buttons,
                       PlannerHeader(
                         showAddButton: canAddSession,
                         onCalendarTap: () async {
@@ -69,7 +70,7 @@ class PlannerPage extends ConsumerWidget {
                       ),
                       const SizedBox(height: 20),
 
-                      // Week Calendar Strip
+                      // Week Calendar Strip,   
                       WeekCalendar(
                         days: state.days,
                         selectedDate: state.selectedDate,
@@ -79,7 +80,7 @@ class PlannerPage extends ConsumerWidget {
                       ),
                       const SizedBox(height: 20),
 
-                      // Study Schedule Items List
+                      // Study Schedule Items
                       StudyScheduleList(
                         sessions: state.sessions,
                         onEditSession: (session) {

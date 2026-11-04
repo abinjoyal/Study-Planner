@@ -49,7 +49,7 @@ lib/
 │   ├── planner/         # Study schedules, calendar, and task generation
 │   ├── profile/         # User preferences and account settings
 │   ├── progress/        # Performance reports and completion statistics
-│   └── splash/          # App initialization and auth state checks
+│   └── splash/          # App initialization and auth state 
 └── main.dart            
 ```
 
